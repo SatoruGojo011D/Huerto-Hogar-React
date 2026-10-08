@@ -1,0 +1,238 @@
+/* Carrito: tarjetas de productos, cantidades, resumen y estado vacío. */
+/* --- VISTA: CARRITO DE COMPRAS --- */
+.cart-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2rem;
+    align-items: start;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.cart-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 1.2rem;
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.cart-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.cart-card-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+}
+
+.unit-price {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+}
+
+.qty-control {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 0.2rem 0.6rem;
+    gap: 0.8rem;
+    background: #FAF8F5;
+}
+
+.qty-btn {
+    border: none;
+    background: none;
+    color: var(--text-dark);
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.qty-val {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #BDC3C7;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+
+.remove-btn:hover {
+    color: #E74C3C;
+}
+
+.item-total-price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+.date-picker-box {
+    margin: 1.5rem 0;
+}
+
+.date-picker-box label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.date-select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    background: #FAF8F5;
+    font-family: inherit;
+    font-size: 0.85rem;
+    outline: none;
+    color: var(--text-dark);
+}
+
+.green-impact-card {
+    background: var(--badge-bg);
+    border-radius: 14px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.impact-header {
+    color: var(--primary-green);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+.impact-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--title-brown);
+    margin-bottom: 0.3rem;
+}
+
+.impact-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+}
+
+.progress-track {
+    height: 6px;
+    background: #C8E6C9;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--primary-green);
+    transition: width 0.35s ease;
+}
+
+.free-shipping-indicator {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.8rem;
+}
+
+.empty-cart {
+    background: var(--card-bg);
+    border: 1px dashed var(--border-light);
+    border-radius: 16px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.empty-cart-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.empty-cart h3 {
+    margin-bottom: 0.5rem;
+}
+
+.empty-cart p {
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+}
+
+.empty-cart-btn {
+    display: inline-block;
+    width: auto;
+    text-decoration: none;
+}
+
+@media (max-width: 800px) {
+    .cart-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .cart-card {
+        grid-template-columns: 72px 1fr;
+        gap: 1rem;
+    }
+
+    .cart-card img {
+        width: 72px;
+        height: 72px;
+    }
+
+    .item-total-price {
+        grid-column: 2;
+    }
+}
+
+/* Boleta confirmada: modal centrado que funciona como comprobante final. */
+.receipt-overlay { position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center; padding: 1rem; background: rgba(28, 50, 35, 0.62); }
+.receipt-overlay[hidden] { display: none; }
+.receipt-modal { position: relative; width: min(100%, 460px); padding: 2.2rem; border-radius: 24px; background: #fffdf9; box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25); text-align: center; }
+.receipt-close { position: absolute; top: 0.8rem; right: 1rem; border: 0; background: transparent; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; }
+.receipt-success-icon { width: 54px; height: 54px; display: grid; place-items: center; margin: 0 auto 0.8rem; border-radius: 50%; background: var(--badge-bg); color: var(--primary-green); font-size: 1.8rem; font-weight: 700; }
+.receipt-kicker { color: var(--primary-green); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.receipt-modal h2 { margin: 0.35rem 0; font-size: 1.8rem; }
+.receipt-lead { color: var(--text-muted); font-size: 0.88rem; }
+.receipt-code-box { margin: 1.3rem 0; padding: 0.9rem; border: 1px dashed #a9c9ad; border-radius: 12px; background: #f1f8ef; }
+.receipt-code-box span, .receipt-details span { display: block; color: var(--text-muted); font-size: 0.75rem; }
+.receipt-code-box strong { color: var(--primary-green); font-size: 1.4rem; letter-spacing: 0.08em; }
+.receipt-details { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.3rem; text-align: left; }
+.receipt-details strong { color: var(--text-dark); font-size: 0.82rem; }
+.receipt-track-btn { display: block; width: 100%; text-decoration: none; }
+.receipt-secondary-btn { margin-top: 0.75rem; border: 0; background: transparent; color: var(--primary-green); cursor: pointer; font-weight: 600; }
+body.receipt-open { overflow: hidden; }

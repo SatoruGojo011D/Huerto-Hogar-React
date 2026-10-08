@@ -1,0 +1,193 @@
+/* Inicio: hero principal, beneficios y productos destacados. */
+/* --- VISTA: INICIO --- */
+.container { /* ancho máximo del contenido, centrado en la página */
+    width: min(1200px, calc(100% - 2rem));
+    margin: 0 auto;
+}
+
+/* Cambia aquí el bloque visual principal de la página de inicio. */
+.home-hero {
+    position: relative;
+    min-height: 500px;
+    max-width: 1100px;
+    border-radius: 24px;
+    overflow: hidden; /* recorta la imagen para que respete las esquinas redondeadas */
+    /* Imagen de fondo del inicio; puede reemplazarse por otra ruta de img/. */
+    background-image: url('../img/hero-campo.png');
+    background-size: cover; /* la imagen cubre todo el bloque sin deformarse */
+    background-position: center; /* centra la imagen dentro del bloque */
+    margin: 2rem auto 0; /* separa el bloque arriba y lo centra horizontalmente */
+    display: flex;
+    align-items:flex-end; /* empuja el contenido (texto) hacia abajo del bloque */
+}
+
+/* Overlay: oscurece la imagen para mejorar la lectura del texto. */
+.home-hero::before { /* capa oscura semi-transparente encima de la imagen, para que el texto blanco se lea bien */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 50, 8, 0.30) 0%, rgba(10, 20, 8, 0.8) 100%);
+}
+
+.home-hero__content { /* contenedor del texto y botones, encima del overlay */
+    position: relative;
+    z-index: 1;
+    display: block;
+    padding: 2.5rem 3rem;
+    max-width: 640px; /* limita el ancho del texto para que no se estire de lado a lado */
+    margin: 0; /* anula el margin:auto que hereda de .container, para que quede pegado a la izquierda */
+}
+
+/* Etiqueta pequeña que identifica la campaña o sección. */
+.section-kicker { /* cosecha del dia*/
+    display: inline-block;
+    margin-bottom: 1rem;
+    background: #bf9e26;
+    color: #1a1a1a;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.home-hero h2 {    /* del campo directo a tu mesa*/
+    color: #f9f9f9;
+    margin: 0 0 0.75rem;
+    line-height: 1.15;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);/* tamaño de letra flexible: mínimo 1.8rem, máximo 2.6rem, escala con el ancho de pantalla */
+    font-weight: 500;
+}
+
+.section-heading h2 { /* título "Productos Destacados" más abajo en la página*/
+    color: var(--primary-green, #2d5a27);
+    margin: 0 0 1rem;
+    line-height: 1.1;
+}
+
+.home-hero p { /* párrafo descriptivo del hero */
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.08rem;
+    line-height: 1.7;
+    max-width: 560px;/* evita que el texto se estire demasiado ancho y sea difícil de leer */
+    margin-bottom: 1.5rem;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+}
+
+.hero-actions { /* fila que contiene los dos botones (Ver Catálogo / Nuestra historia) */
+    display: flex;
+    flex-wrap: wrap;/* si no caben lado a lado, pasan a la siguiente línea */
+    gap: 1.20rem;/* espacio entre los botones */
+    margin-bottom: 1.5rem;
+}
+
+.home-btn { /* estilo compartido por ambos botones del hero */
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    min-width: 170px;/* ancho mínimo para que ambos botones se vean parejos */
+}
+
+.btn-secondary { /* botón "Nuestra historia" (el outline, no el verde sólido) */
+    background: rgba(0, 0, 0, 0.50);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    border-radius: 10px;
+}
+
+.hero-points { /* lista "Entrega local / Sin intermediarios / Productos frescos" */
+    list-style: none; /* quita los puntos por defecto de una lista */
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem; /* espacio entre cada ítem */
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+}
+
+.hero-points li::before { /* agrega el ✓ verde antes de cada ítem de la lista, sin tener que escribirlo en el HTML */
+    content: '✓';
+    color: #7ed957;
+    margin-right: 0.35rem;
+}
+
+.home-section { /* separación vertical de la sección de "Productos Destacados" */
+    padding: 4rem 0 5rem;
+}
+
+.section-heading {  /* contenedor del kicker + título de "Productos Destacados" */
+    margin-bottom: 2rem;
+}
+
+.section-heading h2 {
+    font-size: clamp(2rem, 3vw, 2.7rem);
+}
+
+/* Grilla: organiza las tarjetas de productos destacados. */
+.featured-grid { /* grilla de las tarjetas de producto: 4 columnas iguales */
+    display: grid;
+    grid-template-columns: repeat(4, minmax(220px, 1fr));
+    gap: 1.5rem; /* espacio entre tarjetas */
+}
+
+.feature-card { /* tarjeta individual de producto */
+    background: #fff;
+    border: 1px solid rgba(70, 101, 68, 0.12);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 14px 35px rgba(18, 35, 19, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;/* suaviza el efecto al pasar el mouse */
+}
+
+.feature-card:hover { /* efecto al pasar el mouse sobre la tarjeta: se levanta un poco */
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(18, 35, 19, 0.08);
+}
+
+.feature-card img { /* foto del producto dentro de la tarjeta */
+    width: 100%;
+    height: 220px;
+    object-fit: cover;/* recorta la imagen para llenar el espacio sin deformarse */
+    display: block;
+}
+
+.feature-card__body { /* zona de texto debajo de la foto (nombre, precio, botón) */
+    padding: 1rem 1rem 1.2rem;
+}
+
+.feature-card h3 {  /* nombre del producto */
+    margin: 0 0 0.4rem;
+    color: var(--primary-green, #2d5a27);
+    font-size: 1.35rem;
+}
+
+.feature-btn { /* botón "Añadir al Carrito" dentro de cada tarjeta */
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+@media (max-width: 980px) { /* pantallas medianas (tablets): la grilla de productos pasa de 4 a 2 columnas */
+    .featured-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 680px) { /* pantallas chicas (celulares): ajustes para que todo quepa en una columna */
+    .featured-grid {  /* la grilla de productos pasa a 1 sola columna */
+        grid-template-columns: 1fr;
+    }
+
+    .home-hero { /* el hero se hace más bajo, ya que en celular no hay tanto espacio vertical disponible */
+        min-height: 380px;
+    }
+
+    .home-hero__content { /* menos padding lateral, para aprovechar mejor el ancho reducido de la pantalla */
+        padding: 2rem 1.5rem;
+    }
+}

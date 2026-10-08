@@ -1,0 +1,205 @@
+/* Catálogo: filtros, tarjetas, overlay de detalles y componentes de reseñas. */
+/* =====================================================
+   CATÁLOGO DE PRODUCTOS (productos.html)
+   Filtros, grilla de productos, overlay "Ver detalles",
+   modal de detalle/reseñas y botón de compartir.
+   ===================================================== */
+
+.catalogo-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* Tarjeta base (la misma que usa el carrito): borde, esquinas
+   redondeadas y sombra suave. producto-card la reutiliza. */
+.cart-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 1.2rem;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.unit-price {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+}
+
+/* Estilos de formulario (label + input + mensaje de error), usados
+   en el formulario de reseñas dentro del modal de producto. */
+.form-group {
+    margin-bottom: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--text-dark);
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    background: #FAF8F5;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    box-sizing: border-box;
+}
+
+.form-group textarea.campo-invalido {
+    border-color: #E74C3C;
+    background: #FDEDEC;
+}
+
+.form-group .mensaje-error {
+    display: none;
+    color: #E74C3C;
+    font-size: 0.78rem;
+    margin-top: 0.4rem;
+}
+
+.form-group .mensaje-error.visible {
+    display: block;
+}
+
+.filtros-sidebar {
+    padding: 1.3rem;
+}
+
+.filtros-sidebar h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.8rem;
+}
+
+.lista-filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    margin-bottom: 1.4rem;
+}
+
+.lista-filtros label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.lista-filtros input[type="checkbox"] {
+    accent-color: var(--primary-green);
+}
+
+.producto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.2rem;
+}
+
+.producto-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 1rem;
+}
+
+.producto-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.producto-card h3 {
+    margin-top: 0.8rem;
+    font-size: 1rem;
+}
+
+.producto-card .stock-info {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+}
+
+.producto-card .btn-checkout {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+.sin-resultados {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+}
+
+@media (max-width: 850px) {
+    .catalogo-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- CAPA "VER DETALLES" AL PASAR EL CURSOR SOBRE LA FOTO --- */
+.img-container {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.overlay-detalles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(43, 122, 75, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-overlay {
+    color: #FFFFFF;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+}
+
+.img-container:hover .overlay-detalles {
+    opacity: 1;
+}
+
+.img-container:hover img {
+    transform: scale(1.05);
+}
+
+

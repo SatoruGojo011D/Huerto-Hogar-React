@@ -1,0 +1,36 @@
+const categoryOptions = [
+  ['frutas', 'Frutas frescas'],
+  ['verduras', 'Verduras orgánicas'],
+  ['organicos', 'Productos orgánicos'],
+  ['lacteos', 'Productos lácteos'],
+]
+
+const priceOptions = [
+  ['bajo', 'Menos de $1.000 CLP'],
+  ['medio', '$1.000 - $3.000 CLP'],
+  ['alto', 'Más de $3.000 CLP'],
+]
+
+export default function CatalogFilters({ categories, setCategories, prices, setPrices, search, setSearch }) {
+  function toggle(values, setter, value) {
+    setter(values.includes(value) ? values.filter((item) => item !== value) : [...values, value])
+  }
+
+  function clearFilters() {
+    setCategories([])
+    setPrices([])
+    setSearch('')
+  }
+
+  return (
+    <aside className="summary-box filtros-sidebar" aria-label="Filtros del catálogo">
+      <h3 className="serif">Buscar</h3>
+      <input aria-label="Buscar productos" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Nombre del producto" />
+      <h3 className="serif">Categorías</h3>
+      <div className="lista-filtros">{categoryOptions.map(([value, label]) => <label key={value}><input type="checkbox" checked={categories.includes(value)} onChange={() => toggle(categories, setCategories, value)} />{label}</label>)}</div>
+      <h3 className="serif">Precio</h3>
+      <div className="lista-filtros">{priceOptions.map(([value, label]) => <label key={value}><input type="checkbox" checked={prices.includes(value)} onChange={() => toggle(prices, setPrices, value)} />{label}</label>)}</div>
+      <button type="button" className="btn-secondary" onClick={clearFilters}>Limpiar filtros</button>
+    </aside>
+  )
+}
