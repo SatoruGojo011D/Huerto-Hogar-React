@@ -130,13 +130,8 @@
 }
 
 /* Grilla: organiza las tarjetas de productos destacados. */
-.featured-grid { /* grilla de las tarjetas de producto: 4 columnas iguales */
-    display: grid;
-    grid-template-columns: repeat(4, minmax(220px, 1fr));
-    gap: 1.5rem; /* espacio entre tarjetas */
-}
-
 .feature-card { /* tarjeta individual de producto */
+    height: 100%;
     background: #fff;
     border: 1px solid rgba(70, 101, 68, 0.12);
     border-radius: 20px;
@@ -172,17 +167,7 @@
     margin-top: 0.75rem;
 }
 
-@media (max-width: 980px) { /* pantallas medianas (tablets): la grilla de productos pasa de 4 a 2 columnas */
-    .featured-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
 @media (max-width: 680px) { /* pantallas chicas (celulares): ajustes para que todo quepa en una columna */
-    .featured-grid {  /* la grilla de productos pasa a 1 sola columna */
-        grid-template-columns: 1fr;
-    }
-
     .home-hero { /* el hero se hace más bajo, ya que en celular no hay tanto espacio vertical disponible */
         min-height: 380px;
     }

@@ -136,7 +136,7 @@ body,
   display: none;
 }
 
-.producto-grid .producto-card {
+.catalog-results .producto-card {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -145,14 +145,14 @@ body,
   overflow: hidden;
 }
 
-.producto-grid .producto-card .img-container {
+.catalog-results .producto-card .img-container {
   display: block;
   flex: 0 0 168px;
   width: 100%;
   height: 168px;
 }
 
-.producto-grid .producto-card .img-container img {
+.catalog-results .producto-card .img-container img {
   width: 100%;
   height: 100%;
 }

@@ -7,6 +7,9 @@ const navigation = [
   ['Seguimiento', '/seguimiento'],
   ['Mi cuenta', '/cuenta'],
   ['Mi perfil', '/perfil'],
+  ['Bootstrap: alertas', '/bootstrap/alertas'],
+  ['Bootstrap: productos', '/bootstrap/productos'],
+  ['Bootstrap: ayuda', '/bootstrap/ayuda'],
 ]
 
 export default function SiteFooter() {

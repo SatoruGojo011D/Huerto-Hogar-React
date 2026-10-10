@@ -2,6 +2,8 @@
 
 Esta guía explica la responsabilidad real de cada archivo y de cada bloque importante del proyecto. Además, las páginas HTML, módulos JavaScript y hojas CSS tienen comentarios colocados encima de sus estructuras principales. Se mantiene la documentación por bloques en lugar de repetir una frase en cada línea, porque así el proyecto sigue siendo legible y ejecutable.
 
+> Nota: esta guía corresponde a la versión anterior construida con HTML y JavaScript sin React. Esa versión se conserva como antecedente; la estructura activa de React está descrita en el `README.md` de la raíz.
+
 ## Cómo funciona el proyecto
 
 1. Las páginas HTML definen la estructura visible y conectan hojas CSS y scripts.

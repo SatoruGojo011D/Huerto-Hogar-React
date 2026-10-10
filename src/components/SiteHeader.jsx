@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getItemCount, getSession } from '../lib/storage.js'
+import { getItemCount, getSession } from '../js/storage.js'
 
 const navigation = [
   ['Inicio', '/'],

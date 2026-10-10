@@ -1,4 +1,4 @@
-import { products, resolveProductImage } from '../data/products.js'
+import { products, resolveProductImage } from './products.js'
 
 export function readStorage(key, fallback) {
   try {
@@ -114,10 +114,6 @@ function normalizeCategory(value) {
   if (category.includes('organ')) return 'organicos'
   if (category.includes('lact')) return 'lacteos'
   return category.split(/\s+/)[0] || 'otros'
-}
-
-export function formatPrice(value) {
-  return `$${Number(value || 0).toLocaleString('es-CL')} CLP`
 }
 
 export function getItemCount() {

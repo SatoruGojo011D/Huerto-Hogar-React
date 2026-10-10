@@ -25,12 +25,12 @@ export default function CatalogFilters({ categories, setCategories, prices, setP
   return (
     <aside className="summary-box filtros-sidebar" aria-label="Filtros del catálogo">
       <h3 className="serif">Buscar</h3>
-      <input aria-label="Buscar productos" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Nombre del producto" />
+      <input className="form-control mb-3" aria-label="Buscar productos" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Nombre del producto" />
       <h3 className="serif">Categorías</h3>
       <div className="lista-filtros">{categoryOptions.map(([value, label]) => <label key={value}><input type="checkbox" checked={categories.includes(value)} onChange={() => toggle(categories, setCategories, value)} />{label}</label>)}</div>
       <h3 className="serif">Precio</h3>
       <div className="lista-filtros">{priceOptions.map(([value, label]) => <label key={value}><input type="checkbox" checked={prices.includes(value)} onChange={() => toggle(prices, setPrices, value)} />{label}</label>)}</div>
-      <button type="button" className="btn-secondary" onClick={clearFilters}>Limpiar filtros</button>
+      <button type="button" className="btn btn-outline-success w-100" onClick={clearFilters}>Limpiar filtros</button>
     </aside>
   )
 }

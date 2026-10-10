@@ -1,0 +1,19 @@
+import { useState } from 'react'
+
+export function AboutPage() {
+  const [location, setLocation] = useState(null)
+  const cities = [
+    ['Santiago', 'Av. Providencia 1208, Providencia, Santiago, Chile'],
+    ['Puerto Montt', 'Av. Diego Portales 1000, Puerto Montt, Chile'],
+    ['Villarrica', 'Camino Villarrica-Pucón 1500, Villarrica, Chile'],
+    ['Viña del Mar', 'Av. San Martín 2100, Viña del Mar, Chile'],
+  ]
+  return (
+    <main className="seccion-nosotros">
+      <section className="about-intro"><span className="section-kicker">Del campo a tu hogar</span><h2 className="cart-title serif">Nuestra historia</h2><p>HuertoHogar es una tienda online dedicada a llevar la frescura y calidad de los productos del campo directamente a la puerta de nuestros clientes en Chile. Con más de 6 años de experiencia, conectamos a las familias con pequeños productores y promovemos un estilo de vida saludable y sostenible.</p></section>
+      <section className="mision-vision-grid" aria-label="Misión, visión y compromiso"><article className="mision-vision-card"><h3 className="serif">🌱 Misión</h3><p>Proporcionar productos frescos y de calidad directamente desde el campo hasta la puerta de nuestros clientes.</p></article><article className="mision-vision-card"><h3 className="serif">🔭 Visión</h3><p>Ser una tienda referente en distribución de productos naturales en Chile, reconocida por su calidad y compromiso ecológico.</p></article><article className="mision-vision-card"><h3 className="serif">🤝 Compromiso</h3><p>Reducimos intermediarios entre el productor y tu mesa, apoyando a pequeños agricultores locales.</p></article></section>
+      <section className="redes-sociales-section"><h3 className="serif">Síguenos y comparte</h3><p className="redes-subtitulo">Ofertas, cosechas del día y recetas de nuestra comunidad.</p><div className="redes-grid"><a className="red-card" href="https://instagram.com" target="_blank" rel="noreferrer"><h4>Instagram</h4><span className="red-handle">@HuertoHogar.cl</span><p>Recetas y cosechas diarias.</p></a><a className="red-card" href="https://wa.me/56912345678" target="_blank" rel="noreferrer"><h4>WhatsApp</h4><span className="red-handle">+56 9 1234 5678</span><p>Atención y pedidos rápidos.</p></a><a className="red-card" href="https://facebook.com" target="_blank" rel="noreferrer"><h4>Facebook</h4><span className="red-handle">/HuertoHogarChile</span></a><a className="red-card" href="https://tiktok.com" target="_blank" rel="noreferrer"><h4>TikTok</h4><span className="red-handle">@HuertoHogar</span><p>Consejos para tu hogar.</p></a></div></section>
+      <section className="mapa-sucursales"><h3 className="serif">Nuestras ubicaciones</h3><p>Selecciona una ciudad para ver la sucursal de acopio.</p><div className="grupo-ciudades">{cities.map(([city, address]) => <button className={`btn-checkout btn-ciudad${location?.city === city ? ' activo' : ''}`} type="button" key={city} aria-pressed={location?.city === city} onClick={() => setLocation({ city, address })}>{city}</button>)}</div>{location && <div className="location-result" aria-live="polite"><strong>{location.city}</strong><p>{location.address}</p><div className="mapa-container"><iframe title={`Mapa de sucursal en ${location.city}`} src={`https://maps.google.com/maps?q=${encodeURIComponent(location.address)}&t=&z=16&ie=UTF8&iwloc=&output=embed`} loading="lazy" /></div><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`} target="_blank" rel="noreferrer">Abrir en Google Maps</a></div>}</section>
+    </main>
+  )
+}

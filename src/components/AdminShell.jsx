@@ -1,4 +1,4 @@
-import { getSession } from '../lib/storage.js'
+import { getSession } from '../js/storage.js'
 
 const adminNavigation = [
   ['/admin', 'Dashboard'],

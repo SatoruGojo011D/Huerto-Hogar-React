@@ -1,14 +1,13 @@
-import { useState } from 'react'
-import { addCartItem, formatPrice } from '../lib/storage.js'
+import { formatPrice } from '../js/format.js'
+import useTransientFeedback from '../js/useTransientFeedback.js'
 
-export default function ProductCard({ product, featured = false }) {
-  const [added, setAdded] = useState(false)
+export default function ProductCard({ product, featured = false, onAdd }) {
+  const { isActive: added, trigger } = useTransientFeedback()
   const cardClass = featured ? 'feature-card' : 'cart-card producto-card'
 
   function addToCart() {
-    addCartItem(product)
-    setAdded(true)
-    window.setTimeout(() => setAdded(false), 1000)
+    onAdd(product)
+    trigger()
   }
 
   return (

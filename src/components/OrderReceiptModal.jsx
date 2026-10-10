@@ -1,4 +1,4 @@
-import { formatPrice } from '../lib/storage.js'
+import { formatPrice } from '../js/format.js'
 
 export default function OrderReceiptModal({ order, onClose }) {
   if (!order) return null

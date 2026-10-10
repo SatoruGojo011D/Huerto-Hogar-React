@@ -18,10 +18,26 @@ import './App.css'
 import SiteHeader from './components/SiteHeader.jsx'
 import SiteFooter from './components/SiteFooter.jsx'
 import AdminShell from './components/AdminShell.jsx'
-import { ensureSeedUsers, getSession } from './lib/storage.js'
-import { HomePage, CatalogPage, ProductDetailPage, CartPage, AboutPage, BlogPage, ContactPage, TrackingPage } from './pages/StorePages.jsx'
-import { LoginPage, RegisterPage, ProfilePage } from './pages/AccountPages.jsx'
-import { AdminDashboardPage, AdminProductsPage, AdminProductFormPage, AdminUsersPage, AdminUserFormPage } from './pages/AdminPages.jsx'
+import { ensureSeedUsers, getSession } from './js/storage.js'
+import { HomePage } from './pages/HomePage.jsx'
+import { CatalogPage } from './pages/CatalogPage.jsx'
+import { ProductDetailPage } from './pages/ProductDetailPage.jsx'
+import { CartPage } from './pages/CartPage.jsx'
+import { AboutPage } from './pages/AboutPage.jsx'
+import { BlogPage } from './pages/BlogPage.jsx'
+import { ContactPage } from './pages/ContactPage.jsx'
+import { TrackingPage } from './pages/TrackingPage.jsx'
+import { LoginPage } from './pages/LoginPage.jsx'
+import { RegisterPage } from './pages/RegisterPage.jsx'
+import { ProfilePage } from './pages/ProfilePage.jsx'
+import { AdminDashboardPage } from './pages/AdminDashboardPage.jsx'
+import { AdminProductsPage } from './pages/AdminProductsPage.jsx'
+import { AdminProductFormPage } from './pages/AdminProductFormPage.jsx'
+import { AdminUsersPage } from './pages/AdminUsersPage.jsx'
+import { AdminUserFormPage } from './pages/AdminUserFormPage.jsx'
+import { Pag1Bootstrap } from './pages/Pag1Bootstrap.jsx'
+import { Pag2Bootstrap } from './pages/Pag2Bootstrap.jsx'
+import { Pag3Bootstrap } from './pages/Pag3Bootstrap.jsx'
 
 const publicRoutes = {
   '/': { title: 'HuertoHogar | Frescura del Campo a tu Mesa', active: '/', Page: HomePage },
@@ -35,6 +51,9 @@ const publicRoutes = {
   '/cuenta': { title: 'HuertoHogar | Iniciar sesión', active: '', Page: LoginPage },
   '/registro': { title: 'HuertoHogar | Crear cuenta', active: '', Page: RegisterPage },
   '/perfil': { title: 'HuertoHogar | Mi perfil', active: '', Page: ProfilePage },
+  '/bootstrap/alertas': { title: 'HuertoHogar | Bootstrap: alertas y botones', active: '', Page: Pag1Bootstrap },
+  '/bootstrap/productos': { title: 'HuertoHogar | Bootstrap: productos', active: '', Page: Pag2Bootstrap },
+  '/bootstrap/ayuda': { title: 'HuertoHogar | Bootstrap: ayuda', active: '', Page: Pag3Bootstrap },
 }
 
 const adminRoutes = {
