@@ -21,6 +21,7 @@ import AdminShell from './components/AdminShell.jsx'
 import { ensureSeedUsers, getSession } from './js/storage.js'
 import { HomePage } from './pages/HomePage.jsx'
 import { CatalogPage } from './pages/CatalogPage.jsx'
+import { OffersPage } from './pages/OffersPage.jsx'
 import { ProductDetailPage } from './pages/ProductDetailPage.jsx'
 import { CartPage } from './pages/CartPage.jsx'
 import { AboutPage } from './pages/AboutPage.jsx'
@@ -31,10 +32,15 @@ import { LoginPage } from './pages/LoginPage.jsx'
 import { RegisterPage } from './pages/RegisterPage.jsx'
 import { ProfilePage } from './pages/ProfilePage.jsx'
 import { AdminDashboardPage } from './pages/AdminDashboardPage.jsx'
+import { AdminOrdersPage } from './pages/AdminOrdersPage.jsx'
 import { AdminProductsPage } from './pages/AdminProductsPage.jsx'
 import { AdminProductFormPage } from './pages/AdminProductFormPage.jsx'
+import { AdminCriticalProductsPage } from './pages/AdminCriticalProductsPage.jsx'
+import { AdminCategoriesPage } from './pages/AdminCategoriesPage.jsx'
 import { AdminUsersPage } from './pages/AdminUsersPage.jsx'
 import { AdminUserFormPage } from './pages/AdminUserFormPage.jsx'
+import { AdminUserHistoryPage } from './pages/AdminUserHistoryPage.jsx'
+import { AdminReportsPage } from './pages/AdminReportsPage.jsx'
 import { Pag1Bootstrap } from './pages/Pag1Bootstrap.jsx'
 import { Pag2Bootstrap } from './pages/Pag2Bootstrap.jsx'
 import { Pag3Bootstrap } from './pages/Pag3Bootstrap.jsx'
@@ -42,6 +48,7 @@ import { Pag3Bootstrap } from './pages/Pag3Bootstrap.jsx'
 const publicRoutes = {
   '/': { title: 'HuertoHogar | Frescura del Campo a tu Mesa', active: '/', Page: HomePage },
   '/catalogo': { title: 'HuertoHogar | Catálogo de Productos', active: '/catalogo', Page: CatalogPage },
+  '/ofertas': { title: 'HuertoHogar | Ofertas', active: '/ofertas', Page: OffersPage },
   '/producto': { title: 'HuertoHogar | Detalle de Producto', active: '/catalogo', Page: ProductDetailPage },
   '/carrito': { title: 'HuertoHogar | Mi carrito', active: '', Page: CartPage },
   '/nosotros': { title: 'HuertoHogar | Nosotros', active: '/nosotros', Page: AboutPage },
@@ -58,12 +65,18 @@ const publicRoutes = {
 
 const adminRoutes = {
   '/admin': ['Dashboard - HuertoHogar', 'Resumen general', AdminDashboardPage],
+  '/admin/ordenes': ['HuertoHogar | Órdenes y boletas', 'Órdenes y boletas', AdminOrdersPage],
   '/admin/productos': ['HuertoHogar | Administración de productos', 'Administración de productos', AdminProductsPage],
   '/admin/productos/nuevo': ['HuertoHogar | Nuevo producto', 'Agregar nuevo producto', () => <AdminProductFormPage />],
   '/admin/productos/editar': ['HuertoHogar | Editar producto', 'Editar producto', () => <AdminProductFormPage edit />],
+  '/admin/productos-criticos': ['HuertoHogar | Stock crítico', 'Productos con stock crítico', AdminCriticalProductsPage],
+  '/admin/categorias': ['HuertoHogar | Categorías', 'Administración de categorías', AdminCategoriesPage],
   '/admin/usuarios': ['HuertoHogar | Administración de usuarios', 'Administración de usuarios', AdminUsersPage],
   '/admin/usuarios/nuevo': ['HuertoHogar | Nuevo usuario', 'Registrar usuario', () => <AdminUserFormPage />],
   '/admin/usuarios/editar': ['HuertoHogar | Editar usuario', 'Editar usuario', () => <AdminUserFormPage edit />],
+  '/admin/usuarios/historial': ['HuertoHogar | Historial de compras', 'Historial de compras del usuario', AdminUserHistoryPage],
+  '/admin/reportes': ['HuertoHogar | Reportes', 'Reportes de ventas', AdminReportsPage],
+  '/admin/perfil': ['HuertoHogar | Perfil de administrador', 'Perfil de administrador', () => <ProfilePage adminMode />],
 }
 
 function ProtectedAdmin({ title, Page }) {

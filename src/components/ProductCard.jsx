@@ -1,7 +1,8 @@
+import { memo } from 'react'
 import { formatPrice } from '../js/format.js'
 import useTransientFeedback from '../js/useTransientFeedback.js'
 
-export default function ProductCard({ product, featured = false, onAdd }) {
+function ProductCard({ product, featured = false, onAdd }) {
   const { isActive: added, trigger } = useTransientFeedback()
   const cardClass = featured ? 'feature-card' : 'cart-card producto-card'
 
@@ -27,3 +28,5 @@ export default function ProductCard({ product, featured = false, onAdd }) {
     </article>
   )
 }
+
+export default memo(ProductCard)

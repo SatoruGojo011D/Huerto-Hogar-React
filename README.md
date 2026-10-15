@@ -15,14 +15,16 @@ npm run dev
 npm run build
 npm run lint
 npm test
+npm run test:karma
 ```
 
-La carpeta `src/test/` contiene 10 pruebas unitarias independientes, una por archivo, para almacenamiento, catálogo, sesiones y carrito. Por ejemplo, verifica que el carrito normalice precios y cantidades inválidos antes de usarlos, y que agregar un producto existente incremente su cantidad en lugar de crear una línea duplicada.
+Vitest ejecuta las pruebas de utilidades de datos y almacenamiento existentes en `src/test/`. Karma con Jasmine ejecuta 10 pruebas unitarias de componentes React desde `src/test/components/components.karma.jsx`; estas se documentan en `src/test/PRUEBAS.md`. Para correr las pruebas Karma se necesita Google Chrome instalado.
 
 ## Rutas
 
 - `/` inicio
 - `/catalogo` catálogo y filtros
+- `/ofertas` selección de frutas y verduras con precios accesibles
 - `/producto?id=FR001` detalle y reseñas
 - `/carrito` carrito y confirmación de pedidos
 - `/nosotros`, `/blog`, `/contacto`, `/seguimiento`
@@ -31,6 +33,8 @@ La carpeta `src/test/` contiene 10 pruebas unitarias independientes, una por arc
 - `/admin`, `/admin/productos`, `/admin/usuarios`
 - `/admin/productos/nuevo`, `/admin/productos/editar?id=ID`
 - `/admin/usuarios/nuevo`, `/admin/usuarios/editar?id=ID`
+- `/admin/ordenes`, `/admin/productos-criticos`, `/admin/categorias`, `/admin/reportes`, `/admin/perfil`
+- `/admin/usuarios/historial?id=ID` historial de compras asociado a un usuario
 
 ## Organización de páginas
 

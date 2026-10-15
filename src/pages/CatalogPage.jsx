@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { addCartItem, getCatalogProducts } from '../js/storage.js'
 import CatalogFilters from '../components/CatalogFilters.jsx'
 import ProductCard from '../components/ProductCard.jsx'
@@ -7,14 +7,17 @@ export function CatalogPage() {
   const [categories, setCategories] = useState([])
   const [prices, setPrices] = useState([])
   const [search, setSearch] = useState('')
-  const catalog = getCatalogProducts()
-  const filteredProducts = catalog.filter((product) => {
-    const categoryMatches = categories.length === 0 || categories.includes(product.category)
-    const priceMatches = prices.length === 0 || prices.some((range) => (
-      range === 'bajo' ? product.price < 1000 : range === 'medio' ? product.price >= 1000 && product.price <= 3000 : product.price > 3000
-    ))
-    return categoryMatches && priceMatches && product.name.toLowerCase().includes(search.trim().toLowerCase())
-  })
+  const catalog = useMemo(() => getCatalogProducts(), [])
+  const filteredProducts = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase()
+    return catalog.filter((product) => {
+      const categoryMatches = categories.length === 0 || categories.includes(product.category)
+      const priceMatches = prices.length === 0 || prices.some((range) => (
+        range === 'bajo' ? product.price < 1000 : range === 'medio' ? product.price >= 1000 && product.price <= 3000 : product.price > 3000
+      ))
+      return categoryMatches && priceMatches && product.name.toLowerCase().includes(normalizedSearch)
+    })
+  }, [catalog, categories, prices, search])
 
   return (
     <main className="container catalog-page py-5">

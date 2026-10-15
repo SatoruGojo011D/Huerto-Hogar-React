@@ -1,16 +1,12 @@
 /* Blog: tarjetas y estructura visual de los artículos informativos. */
 /* --- VISTA: BLOG --- */
-.seccion-blog {
-    padding: 3rem 5%;
+.blog-page {
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.grid-blog {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
+.blog-heading {
+    max-width: 760px;
 }
 
 .card-blog {
@@ -19,6 +15,11 @@
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     transition: transform 0.3s;
+}
+
+.card-blog h3,
+.card-blog p {
+    overflow-wrap: anywhere;
 }
 
 .card-blog:hover {

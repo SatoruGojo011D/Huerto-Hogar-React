@@ -158,7 +158,7 @@
 .products-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
 .products-toolbar p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
 .products-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-.admin-table-wrap { overflow-x: auto; }
+.admin-table-wrap { width: 100%; max-width: 100%; overflow-x: auto; }
 .admin-products-table { width: 100%; border-collapse: collapse; text-align: left; }
 .admin-products-table th { padding: 0.9rem 0.8rem; color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; border-bottom: 2px solid var(--border-light); }
 .admin-products-table td { padding: 0.85rem 0.8rem; border-bottom: 1px solid #f0eee9; vertical-align: middle; }
@@ -172,6 +172,27 @@
 .btn-edit { color: var(--primary-green); background: #eff8ed; }
 .btn-delete { color: #b42318; background: #fff4f2; }
 .btn-action:hover { filter: brightness(0.95); transform: translateY(-1px); }
+.admin-page-stack { display: grid; min-width: 0; gap: 1.5rem; }
+.admin-page-stack > * { min-width: 0; max-width: 100%; }
+.category-form { display: flex; align-items: end; gap: 1rem; flex-wrap: wrap; }
+.category-form .form-group { flex: 1 1 240px; }
+.admin-feedback { min-height: 1.4rem; margin: 0.75rem 0; color: var(--primary-green); font-weight: 600; }
+.critical-stock { color: #b42318; }
+.receipt-admin-meta { display: grid; grid-template-columns: minmax(130px, auto) 1fr; gap: 0.6rem 1rem; margin: 0 0 1.5rem; }
+.receipt-admin-meta dt { color: var(--text-muted); }
+.receipt-admin-meta dd { margin: 0; font-weight: 600; }
+.report-status-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; padding: 0; list-style: none; }
+.report-status-list li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.85rem 1rem; border-radius: 10px; background: #f5faf2; }
+.admin-products-table select { max-width: 180px; padding: 0.45rem; border: 1px solid var(--border-light); border-radius: 8px; background: #fff; }
+.admin-products-table tfoot th,
+.admin-products-table tfoot td { padding: 0.75rem 0.8rem; border-top: 1px solid var(--border-light); text-align: right; }
+
+@media print {
+    body * { visibility: hidden; }
+    .receipt-admin, .receipt-admin * { visibility: visible; }
+    .receipt-admin { position: absolute; inset: 0; width: 100%; box-shadow: none; }
+    .receipt-admin .form-actions { display: none; }
+}
 
 @media (max-width: 768px) {
     .admin-container { display: block; }

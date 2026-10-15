@@ -88,23 +88,43 @@ export function addCartItem(product, quantity = 1) {
 
 export function getCatalogProducts() {
   const storedProducts = readStorage('productos_huerto', [])
-  const custom = Array.isArray(storedProducts) ? storedProducts.filter((product) => product && typeof product === 'object' && product.id != null && String(product.nombre || '').trim()) : []
-  const additions = custom.map((product) => ({
+  const stored = Array.isArray(storedProducts) ? storedProducts.filter((product) => product && typeof product === 'object' && product.id != null) : []
+  const savedById = new Map(stored.map((product) => [String(product.id), product]))
+  const custom = stored.filter((product) => String(product.nombre || '').trim())
+  const baseIds = new Set(products.map((product) => String(product.id)))
+  const catalog = products.map((product) => {
+    const saved = savedById.get(String(product.id))
+    return {
+      ...product,
+      ...(saved ? {
+        name: saved.nombre || product.name,
+        category: normalizeCategory(saved.categoria || product.categoryLabel),
+        categoryLabel: saved.categoria || product.categoryLabel,
+        price: Number(saved.precio ?? product.price) || 0,
+        stock: String(saved.stock ?? product.stock),
+        imagePath: saved.imagen || product.imagePath,
+        image: resolveProductImage(saved.imagen || product.imagePath),
+      } : {}),
+      activo: saved?.activo !== false,
+    }
+  })
+  const additions = custom.filter((product) => !baseIds.has(String(product.id))).map((product) => ({
     id: String(product.id),
     name: product.nombre,
     category: normalizeCategory(product.categoria),
     categoryLabel: product.categoria || 'Otros',
     price: Number(product.precio) || 0,
     unit: 'unidad',
-    stock: String(product.stock || 'Sin stock informado'),
+    stock: String(product.stock ?? 'Sin stock informado'),
     origin: 'HuertoHogar',
     imagePath: product.imagen,
     image: resolveProductImage(product.imagen),
     description: `${product.nombre} disponible en HuertoHogar.`,
     practices: 'Producto incorporado por nuestro equipo.',
     impact: 'Consulta su origen y disponibilidad con nuestro equipo.',
+    activo: product.activo !== false,
   }))
-  return [...products, ...additions]
+  return [...catalog, ...additions].filter((product) => product.activo !== false)
 }
 
 function normalizeCategory(value) {

@@ -18,4 +18,18 @@ describe('getCatalogProducts', () => {
     })
     expect(catalog.some((product) => product.name === 'Sin identificador')).toBe(false)
   })
+
+  it('applies admin edits to base products and omits products deactivated in admin', () => {
+    mockStorage().set('productos_huerto', JSON.stringify([
+      { id: 'FR001', nombre: 'Manzanas editadas', categoria: 'Frutas', precio: 800, stock: 0, activo: true },
+      { id: 'FR002', activo: false },
+    ]))
+    const catalog = getCatalogProducts()
+    expect(catalog.find((product) => product.id === 'FR001')).toMatchObject({
+      name: 'Manzanas editadas',
+      price: 800,
+      stock: '0',
+    })
+    expect(catalog.some((product) => product.id === 'FR002')).toBe(false)
+  })
 })

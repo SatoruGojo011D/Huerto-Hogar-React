@@ -3,7 +3,6 @@ import { products } from '../js/products.js'
 import { addCartItem, getCatalogProducts, getSession, readStorage, writeStorage } from '../js/storage.js'
 import { formatPrice } from '../js/format.js'
 import QuantityControl from '../components/QuantityControl.jsx'
-import StatusMessage from '../components/StatusMessage.jsx'
 import useTransientFeedback from '../js/useTransientFeedback.js'
 
 export function ProductDetailPage() {

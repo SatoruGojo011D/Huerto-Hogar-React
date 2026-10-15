@@ -8,5 +8,23 @@ const articles = [
 
 export function BlogPage() {
   const articleImages = [products[3].image, products[5].image, products[0].image]
-  return <main className="container blog-page"><div className="blog-heading"><span className="section-kicker">Blog & guías sustentables</span><h2 className="serif">El arte de cultivar en casa</h2><p>Técnicas orgánicas, conservación de alimentos y consejos de nuestros agricultores.</p></div><div className="grid-blog">{articles.map((article, index) => <article className="card-blog" key={article.title}><div className={`img-blog blog-image-${index}`}><img src={articleImages[index]} alt={article.category} /></div><div className="contenido-blog"><span className="fecha-blog">{article.category}</span><h3 className="serif">{article.title}</h3><p>{article.text}</p></div></article>)}</div></main>
+  return (
+    <main className="container blog-page py-5">
+      <div className="blog-heading">
+        <span className="section-kicker">Blog & guías sustentables</span>
+        <h2 className="serif">El arte de cultivar en casa</h2>
+        <p>Técnicas orgánicas, conservación de alimentos y consejos de nuestros agricultores.</p>
+      </div>
+      <div className="row g-4 mt-2">
+        {articles.map((article, index) => (
+          <div className="col-12 col-md-6 col-lg-4 d-flex" key={article.title}>
+            <article className="card-blog w-100">
+              <div className={`img-blog blog-image-${index}`}><img src={articleImages[index]} alt={article.category} /></div>
+              <div className="contenido-blog"><span className="fecha-blog">{article.category}</span><h3 className="serif">{article.title}</h3><p>{article.text}</p></div>
+            </article>
+          </div>
+        ))}
+      </div>
+    </main>
+  )
 }

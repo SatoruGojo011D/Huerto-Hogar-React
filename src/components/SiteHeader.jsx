@@ -4,6 +4,7 @@ import { getItemCount, getSession } from '../js/storage.js'
 const navigation = [
   ['Inicio', '/'],
   ['Catálogo', '/catalogo'],
+  ['Ofertas', '/ofertas'],
   ['Nosotros', '/nosotros'],
   ['Blog', '/blog'],
   ['Contacto', '/contacto'],

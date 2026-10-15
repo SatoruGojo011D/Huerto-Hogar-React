@@ -1,6 +1,8 @@
 export default function QuantityControl({ value, onChange, label = 'Cantidad', min = 1, max = 999 }) {
   function change(nextValue) {
-    onChange(Math.min(max, Math.max(min, nextValue)))
+    const numericValue = Number(nextValue)
+    const safeValue = Number.isFinite(numericValue) ? numericValue : min
+    onChange(Math.min(max, Math.max(min, safeValue)))
   }
 
   return (

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { resolveProductImage } from '../js/products.js'
-import { getCart, getOrders, readStorage, saveCart, writeStorage } from '../js/storage.js'
+import { getCart, getOrders, getSession, readStorage, saveCart, writeStorage } from '../js/storage.js'
 import { formatPrice } from '../js/format.js'
 import OrderReceiptModal from '../components/OrderReceiptModal.jsx'
 import QuantityControl from '../components/QuantityControl.jsx'
@@ -9,7 +9,20 @@ import { getMinimumDeliveryDate } from '../js/delivery.js'
 
 function createOrder(cart, delivery, subtotal, shipping) {
   const code = `HH-${Math.floor(10000 + Math.random() * 90000)}`
-  return { code, createdAt: new Date().toISOString(), delivery: delivery || 'Fecha por confirmar', items: cart, subtotal, shipping, total: subtotal + shipping, status: 1 }
+  const customer = getSession()
+  return {
+    code,
+    createdAt: new Date().toISOString(),
+    delivery: delivery || 'Fecha por confirmar',
+    items: cart,
+    subtotal,
+    shipping,
+    total: subtotal + shipping,
+    status: 1,
+    userId: customer?.id ?? null,
+    customerName: customer?.nombre || '',
+    customerEmail: customer?.correo || '',
+  }
 }
 
 export function CartPage() {
