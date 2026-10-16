@@ -59,7 +59,7 @@ export function CartPage() {
         <section className="cart-items" aria-label="Productos del carrito">
           {!cart.length ? <div className="empty-cart"><div className="empty-cart-icon">🛒</div><h3>Tu carrito está vacío</h3><p>Aún no has agregado productos. Explora el catálogo y añade lo que te guste.</p><a href="/catalogo" className="btn-checkout empty-cart-btn">Ver catálogo</a></div> : cart.map((item) => <article className="cart-card" key={item.id}>
             <img src={resolveProductImage(item.imagen)} alt={item.nombre} />
-            <div className="cart-card-info"><h3 className="serif">{item.nombre}</h3><p className="unit-price">{formatPrice(item.precio)}</p><QuantityControl label={`Cantidad de ${item.nombre}`} value={Number(item.qty)} max={999} onChange={(qty) => updateCart(cart.map((entry) => entry.id === item.id ? { ...entry, qty } : entry))} /></div>
+            <div className="cart-card-info"><h3 className="serif">{item.nombre}</h3><p className="unit-price">{item.precio_original > item.precio && <del>{formatPrice(item.precio_original)} </del>}{formatPrice(item.precio)}</p><QuantityControl label={`Cantidad de ${item.nombre}`} value={Number(item.qty)} max={999} onChange={(qty) => updateCart(cart.map((entry) => entry.id === item.id ? { ...entry, qty } : entry))} /></div>
             <button className="remove-btn" type="button" aria-label={`Eliminar ${item.nombre}`} onClick={() => updateCart(cart.filter((entry) => entry.id !== item.id))}>×</button><strong className="item-total-price">{formatPrice(item.precio * item.qty)}</strong>
           </article>)}
         </section>

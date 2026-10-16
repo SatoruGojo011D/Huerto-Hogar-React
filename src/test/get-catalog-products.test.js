@@ -32,4 +32,39 @@ describe('getCatalogProducts', () => {
     })
     expect(catalog.some((product) => product.id === 'FR002')).toBe(false)
   })
+
+  it('applies product discounts consistently to base and admin-created products', () => {
+    mockStorage().set('productos_huerto', JSON.stringify([
+      { id: 'FR001', precio: 1200, descuento: 25 },
+      { id: 'HH01', nombre: 'Lechuga', categoria: 'Verduras', precio: 900, descuento: 10 },
+    ]))
+    const catalog = getCatalogProducts()
+    expect(catalog.find((product) => product.id === 'FR001')).toMatchObject({
+      price: 1200,
+      discountPercent: 25,
+      discountedPrice: 900,
+    })
+    expect(catalog.find((product) => product.id === 'HH01')).toMatchObject({
+      price: 900,
+      discountPercent: 10,
+      discountedPrice: 810,
+    })
+  })
+
+  it('includes the initial promotions in the catalog and allows admin to turn them off', () => {
+    const storage = mockStorage()
+    const initialCatalog = getCatalogProducts()
+    expect(initialCatalog.filter((product) => product.discountPercent > 0)).toHaveLength(4)
+    expect(initialCatalog.find((product) => product.id === 'FR003')).toMatchObject({
+      price: 800,
+      discountPercent: 15,
+      discountedPrice: 680,
+    })
+
+    storage.set('productos_huerto', JSON.stringify([{ id: 'FR003', descuento: 0 }]))
+    expect(getCatalogProducts().find((product) => product.id === 'FR003')).toMatchObject({
+      discountPercent: 0,
+      discountedPrice: 800,
+    })
+  })
 })

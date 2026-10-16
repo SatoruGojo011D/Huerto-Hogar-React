@@ -14,4 +14,17 @@ describe('addCartItem', () => {
       qty: 2,
     }])
   })
+
+  it('stores the discounted price in the cart and keeps the normal price for reference', () => {
+    mockStorage()
+    addCartItem({ id: 'apple', name: 'Manzana', price: 1200, discountedPrice: 900 }, 2)
+    expect(getCart()).toEqual([{
+      id: 'apple',
+      nombre: 'Manzana',
+      precio: 900,
+      imagen: 'img/manzanas-fuji.png',
+      qty: 2,
+      precio_original: 1200,
+    }])
+  })
 })

@@ -11,7 +11,7 @@ import milkImage from '../img/leche.jpg'
 export const products = [
   {
     id: 'FR001', name: 'Manzanas Fuji', category: 'frutas', categoryLabel: 'Frutas Frescas',
-    price: 1200, unit: 'kg', stock: '150 kg', origin: 'Valle del Maule', imagePath: 'img/manzanas-fuji.png', image: applesImage,
+    price: 1200, discountPercent: 10, unit: 'kg', stock: '150 kg', origin: 'Valle del Maule', imagePath: 'img/manzanas-fuji.png', image: applesImage,
     description: 'Manzanas crocantes y jugosas, recién cosechadas. Ideales para colaciones sanas.',
     practices: 'Cultivo local con manejo responsable del suelo y cosecha de temporada.',
     impact: 'Huella de carbono baja gracias a su producción y distribución local.',
@@ -25,21 +25,21 @@ export const products = [
   },
   {
     id: 'FR003', name: 'Plátanos Cavendish', category: 'frutas', categoryLabel: 'Frutas Frescas',
-    price: 800, unit: 'kg', stock: '250 kg', origin: 'Importación Directa', imagePath: 'img/platanos.jpg', image: bananasImage,
+    price: 800, discountPercent: 15, unit: 'kg', stock: '250 kg', origin: 'Importación Directa', imagePath: 'img/platanos.jpg', image: bananasImage,
     description: 'Plátanos de textura suave y maduración perfecta para batidos y repostería.',
     practices: 'Seleccionados por madurez para evitar desperdicios en el hogar.',
     impact: 'Distribución planificada para conservar la frescura y reducir mermas.',
   },
   {
     id: 'VR001', name: 'Zanahorias Orgánicas', category: 'verduras', categoryLabel: 'Verduras Orgánicas',
-    price: 900, unit: 'kg', stock: '100 kg', origin: "Región de O'Higgins", imagePath: 'img/zanahorias.png', image: carrotsImage,
+    price: 900, discountPercent: 10, unit: 'kg', stock: '100 kg', origin: "Región de O'Higgins", imagePath: 'img/zanahorias.png', image: carrotsImage,
     description: 'Cultivadas sin pesticidas en suelos ricos en nutrientes. Sabor intenso y textura firme.',
     practices: 'Manejo orgánico y cuidado del suelo durante todo el cultivo.',
     impact: 'Cultivo cercano que favorece recorridos de entrega más cortos.',
   },
   {
     id: 'VR002', name: 'Espinacas Frescas', category: 'verduras', categoryLabel: 'Verduras Orgánicas',
-    price: 700, unit: 'bolsa 500 g', stock: '80 bolsas', origin: 'Melipilla', imagePath: 'img/espinaca.png', image: spinachImage,
+    price: 700, discountPercent: 10, unit: 'bolsa 500 g', stock: '80 bolsas', origin: 'Melipilla', imagePath: 'img/espinaca.png', image: spinachImage,
     description: 'Hojas verdes lavadas, listas para ensaladas o salteados llenos de hierro.',
     practices: 'Cosecha cuidadosa y empaque práctico para conservar sus hojas.',
     impact: 'Se entrega fresca para reducir el desperdicio por pérdida de calidad.',
@@ -90,4 +90,13 @@ export function resolveProductImage(path) {
   if (!path) return applesImage
   const filename = String(path).split(/[\\/]/).pop()
   return imagePaths[filename] || path
+}
+
+export function normalizeDiscount(value) {
+  const discount = Number(value)
+  return Number.isFinite(discount) ? Math.min(90, Math.max(0, Math.floor(discount))) : 0
+}
+
+export function getDiscountedPrice(price, discountPercent) {
+  return Math.round(price * (100 - normalizeDiscount(discountPercent)) / 100)
 }

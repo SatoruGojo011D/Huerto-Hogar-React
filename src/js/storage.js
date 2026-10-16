@@ -1,4 +1,4 @@
-import { products, resolveProductImage } from './products.js'
+import { getDiscountedPrice, normalizeDiscount, products, resolveProductImage } from './products.js'
 
 export function readStorage(key, fallback) {
   try {
@@ -75,13 +75,17 @@ export function addCartItem(product, quantity = 1) {
   if (item) {
     item.qty = (Number(item.qty) || 0) + amount
   } else {
-    cart.push({
+    const price = Number(product.discountedPrice ?? product.precio ?? product.price) || 0
+    const cartItem = {
       id,
       nombre: product.nombre || product.name,
-      precio: Number(product.precio ?? product.price) || 0,
+      precio: price,
       imagen: product.imagen || product.imagePath || 'img/manzanas-fuji.png',
       qty: amount,
-    })
+    }
+    const originalPrice = Number(product.precio ?? product.price) || 0
+    if (price < originalPrice) cartItem.precio_original = originalPrice
+    cart.push(cartItem)
   }
   return saveCart(cart)
 }
@@ -94,36 +98,46 @@ export function getCatalogProducts() {
   const baseIds = new Set(products.map((product) => String(product.id)))
   const catalog = products.map((product) => {
     const saved = savedById.get(String(product.id))
+    const price = Number(saved?.precio ?? product.price) || 0
+    const discountPercent = normalizeDiscount(saved?.descuento ?? saved?.discountPercent ?? product.discountPercent)
     return {
       ...product,
       ...(saved ? {
         name: saved.nombre || product.name,
         category: normalizeCategory(saved.categoria || product.categoryLabel),
         categoryLabel: saved.categoria || product.categoryLabel,
-        price: Number(saved.precio ?? product.price) || 0,
+        price,
         stock: String(saved.stock ?? product.stock),
         imagePath: saved.imagen || product.imagePath,
         image: resolveProductImage(saved.imagen || product.imagePath),
       } : {}),
+      discountPercent,
+      discountedPrice: getDiscountedPrice(price, discountPercent),
       activo: saved?.activo !== false,
     }
   })
-  const additions = custom.filter((product) => !baseIds.has(String(product.id))).map((product) => ({
-    id: String(product.id),
-    name: product.nombre,
-    category: normalizeCategory(product.categoria),
-    categoryLabel: product.categoria || 'Otros',
-    price: Number(product.precio) || 0,
-    unit: 'unidad',
-    stock: String(product.stock ?? 'Sin stock informado'),
-    origin: 'HuertoHogar',
-    imagePath: product.imagen,
-    image: resolveProductImage(product.imagen),
-    description: `${product.nombre} disponible en HuertoHogar.`,
-    practices: 'Producto incorporado por nuestro equipo.',
-    impact: 'Consulta su origen y disponibilidad con nuestro equipo.',
-    activo: product.activo !== false,
-  }))
+  const additions = custom.filter((product) => !baseIds.has(String(product.id))).map((product) => {
+    const price = Number(product.precio) || 0
+    const discountPercent = normalizeDiscount(product.descuento ?? product.discountPercent)
+    return {
+      id: String(product.id),
+      name: product.nombre,
+      category: normalizeCategory(product.categoria),
+      categoryLabel: product.categoria || 'Otros',
+      price,
+      discountPercent,
+      discountedPrice: getDiscountedPrice(price, discountPercent),
+      unit: 'unidad',
+      stock: String(product.stock ?? 'Sin stock informado'),
+      origin: 'HuertoHogar',
+      imagePath: product.imagen,
+      image: resolveProductImage(product.imagen),
+      description: `${product.nombre} disponible en HuertoHogar.`,
+      practices: 'Producto incorporado por nuestro equipo.',
+      impact: 'Consulta su origen y disponibilidad con nuestro equipo.',
+      activo: product.activo !== false,
+    }
+  })
   return [...catalog, ...additions].filter((product) => product.activo !== false)
 }
 

@@ -1,4 +1,4 @@
-import { products } from './products.js'
+import { normalizeDiscount, products } from './products.js'
 import { readStorage } from './storage.js'
 
 export const imageOptions = [
@@ -24,12 +24,17 @@ export function getAdminProducts() {
       precio: Number(override.precio ?? product.price) || 0,
       stock: String(override.stock ?? product.stock),
       imagen: override.imagen || product.imagePath,
+      discountPercent: normalizeDiscount(override.descuento ?? override.discountPercent ?? product.discountPercent),
       activo: override.activo !== false,
     }
   })
   const customProducts = records
     .filter((product) => !baseIds.has(String(product.id)) && String(product.nombre || '').trim())
-    .map((product) => ({ ...product, activo: product.activo !== false }))
+    .map((product) => ({
+      ...product,
+      discountPercent: normalizeDiscount(product.descuento ?? product.discountPercent),
+      activo: product.activo !== false,
+    }))
   return [...baseProducts, ...customProducts]
 }
 

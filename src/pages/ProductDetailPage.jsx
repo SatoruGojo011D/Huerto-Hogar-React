@@ -40,6 +40,8 @@ export function ProductDetailPage() {
     trigger()
   }
 
+  const currentPrice = displayProduct.discountedPrice ?? displayProduct.price
+
   if (!product) return <main className="container not-found"><h2 className="serif">Producto no encontrado</h2><p>Este producto ya no está disponible en el catálogo.</p><a className="btn-checkout" href="/catalogo">Volver al catálogo</a></main>
 
   return (
@@ -48,7 +50,7 @@ export function ProductDetailPage() {
         <div className="imagen-producto"><img src={displayProduct.image} alt={displayProduct.name} /></div>
         <div className="info-producto">
           <span className="codigo-producto">Código: {displayProduct.id}</span><span className="categoria-detalle">{displayProduct.categoryLabel}</span>
-          <h2>{displayProduct.name}</h2><p className="precio-detalle">{formatPrice(displayProduct.price)} / {displayProduct.unit}</p>
+          <h2>{displayProduct.name}</h2><p className="precio-detalle">{displayProduct.discountPercent > 0 && <><del>{formatPrice(displayProduct.price)}</del> <span className="product-discount-label">-{displayProduct.discountPercent}%</span>{' '}</>}{formatPrice(currentPrice)} / {displayProduct.unit}</p>
           <p className="stock-detalle">Stock disponible: {displayProduct.stock}</p><p>{displayProduct.description}</p>
           <div className="origen-detalle"><strong>Origen:</strong> {displayProduct.origin}<br /><strong>Prácticas sostenibles:</strong> {displayProduct.practices}</div>
           <div className="huella-carbono"><strong>🌿 Impacto ambiental</strong><p>{displayProduct.impact}</p></div>
