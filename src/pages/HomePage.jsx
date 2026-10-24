@@ -1,9 +1,8 @@
-import { products } from '../js/products.js'
-import { addCartItem } from '../js/storage.js'
+import { addCartItem, getCatalogProducts } from '../js/storage.js'
 import ProductCard from '../components/ProductCard.jsx'
 
 export function HomePage() {
-  const featured = [products[0], products[1], products[2], products[3]]
+  const featured = getCatalogProducts().slice(0, 4)
   return (
     <main>
       <section className="home-hero">

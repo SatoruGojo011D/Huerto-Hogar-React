@@ -16,6 +16,8 @@ Para ejecutar también las pruebas existentes de persistencia y lógica de datos
 npm test
 ```
 
+La suite Karma también mide la cobertura del código fuente cargado por sus pruebas. Al terminar, revisa el resumen de cobertura en la terminal o abre `coverage-karma/html/index.html` para consultar el reporte HTML. La medición cubre los módulos instrumentados que ejecuta esta suite; no representa automáticamente todos los componentes y páginas de la aplicación.
+
 ## Descripción de pruebas
 
 ### `QuantityControl` informa el incremento

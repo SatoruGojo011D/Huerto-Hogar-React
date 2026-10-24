@@ -6,11 +6,9 @@ import StatusMessage from '../components/StatusMessage.jsx'
 
 export function RegisterPage() {
   const [message, setMessage] = useState('')
-  const [done, setDone] = useState(false)
 
   function submit(event) {
     event.preventDefault()
-    setDone(false)
     const form = new FormData(event.currentTarget)
     const name = String(form.get('name')).trim()
     const email = String(form.get('email')).trim().toLowerCase()
@@ -25,10 +23,8 @@ export function RegisterPage() {
     if (users.some((user) => user.correo.toLowerCase() === email)) return setMessage('Este correo ya se encuentra registrado.')
     users.push({ id: users.reduce((max, user) => Math.max(max, Number(user.id) || 0), 0) + 1, nombre: name, correo: email, contrasena: password, telefono: '', direccion: '', rol: 'cliente' })
     writeStorage('usuarios_huerto', users)
-    setDone(true)
-    setMessage('Cuenta creada. Ya puedes iniciar sesión.')
-    event.currentTarget.reset()
+    window.location.href = '/cuenta?registro=exitoso'
   }
 
-  return <main className="container account-main"><div className="summary-box"><span className="section-kicker">Únete a la comunidad</span><h2 className="serif">Crear una cuenta</h2><p className="cart-subtitle">Recibe productos frescos en tu puerta.</p><form className="account-form" onSubmit={submit} noValidate><FormField id="register-name" label="Nombre completo" name="name" autoComplete="name" required /><FormField id="register-email" label="Correo electrónico" name="email" type="email" autoComplete="email" required /><FormField id="register-password" label="Contraseña" name="password" type="password" autoComplete="new-password" required help="Mínimo 8 caracteres, con letras y números." /><FormField id="register-confirm" label="Confirmar contraseña" name="confirmPassword" type="password" autoComplete="new-password" required /><label className="fila-checkbox"><input type="checkbox" name="terms" />Acepto los términos y condiciones.</label><StatusMessage variant={done ? 'success' : 'error'}>{message}</StatusMessage><button className="btn-checkout" type="submit">Registrarme</button><p className="account-switch">¿Ya tienes cuenta? <a href="/cuenta">Inicia sesión aquí</a></p></form></div></main>
+  return <main className="container account-main"><div className="summary-box"><span className="section-kicker">Únete a la comunidad</span><h2 className="serif">Crear una cuenta</h2><p className="cart-subtitle">Recibe productos frescos en tu puerta.</p><form className="account-form" onSubmit={submit} noValidate><FormField id="register-name" label="Nombre completo" name="name" autoComplete="name" required /><FormField id="register-email" label="Correo electrónico" name="email" type="email" autoComplete="email" required /><FormField id="register-password" label="Contraseña" name="password" type="password" autoComplete="new-password" required help="Mínimo 8 caracteres, con letras y números." /><FormField id="register-confirm" label="Confirmar contraseña" name="confirmPassword" type="password" autoComplete="new-password" required /><label className="fila-checkbox"><input type="checkbox" name="terms" />Acepto los términos y condiciones.</label><StatusMessage>{message}</StatusMessage><button className="btn-checkout" type="submit">Registrarme</button><p className="account-switch">¿Ya tienes cuenta? <a href="/cuenta">Inicia sesión aquí</a></p></form></div></main>
 }

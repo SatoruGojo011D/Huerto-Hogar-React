@@ -97,13 +97,17 @@ describe('Componentes React', () => {
       id: 'VR001',
       name: 'Zanahorias',
       image: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=',
-      price: 900,
+      price: 1000,
+      discountedPrice: 900,
+      discountPercent: 10,
       unit: 'kg',
       stock: '10 kg',
       origin: 'Chile',
     }
     render(<ProductCard product={product} onAdd={onAdd} />)
 
+    expect(screen.getByText('$1.000 CLP')).toBeTruthy()
+    expect(screen.getByText('$900 CLP')).toBeTruthy()
     await user.click(screen.getByRole('button', { name: 'Añadir' }))
 
     expect(onAdd).toHaveBeenCalledOnceWith(product)

@@ -1,592 +1,358 @@
 # Guía de código de HuertoHogar
 
-Esta guía explica la responsabilidad real de cada archivo y de cada bloque importante del proyecto. Además, las páginas HTML, módulos JavaScript y hojas CSS tienen comentarios colocados encima de sus estructuras principales. Se mantiene la documentación por bloques en lugar de repetir una frase en cada línea, porque así el proyecto sigue siendo legible y ejecutable.
+Esta guía describe la versión activa del proyecto: una tienda construida con React, Vite y Bootstrap. Incluye el propósito de los archivos, la ubicación de páginas y componentes en la interfaz, y los comandos para ejecutar, probar y medir la cobertura del código.
 
-> Nota: esta guía corresponde a la versión anterior construida con HTML y JavaScript sin React. Esa versión se conserva como antecedente; la estructura activa de React está descrita en el `README.md` de la raíz.
+> **Alcance:** por decisión del usuario, esta entrega documenta los archivos en esta guía y no agrega comentarios dentro de los archivos fuente. Las carpetas generadas, como `coverage/`, se explican como reportes; no son código que se deba editar.
 
-## Cómo funciona el proyecto
+## 1. Arquitectura general
 
-1. Las páginas HTML definen la estructura visible y conectan hojas CSS y scripts.
-2. `css/variables.css` define colores y tipografías globales.
-3. `css/reset.css` normaliza márgenes y tamaños de elementos.
-4. Las hojas CSS restantes estilizan cada sección concreta.
-5. `js/inicializacion.js` inicia la aplicación común y expone utilidades.
-6. `js/app.js` conecta las inicializaciones comunes.
-7. `js/carrito.js` administra el carrito mediante `localStorage`.
-8. `js/formularios.js` procesa filtros, formularios y productos del catálogo.
-9. `js/datos-productos.js` carga el detalle de productos y reseñas.
-10. `js/administracion.js` controla autenticación, administración, usuarios y productos.
+1. `index.html` aporta el elemento raíz `#root` y carga `src/main.jsx`.
+2. `src/main.jsx` crea la raíz de React, carga Bootstrap y monta `<App />`.
+3. `src/App.jsx` selecciona la página según `window.location.pathname`, incorpora la cabecera y el pie de página públicos y protege las rutas administrativas.
+4. Las vistas están en `src/pages/`; las piezas reutilizables de interfaz, en `src/components/`.
+5. `src/js/` contiene el catálogo, persistencia del navegador, formato de datos, validación y lógica auxiliar.
+6. Las hojas de `src/styles/`, `src/App.css` y `src/index.css` definen la apariencia.
 
-## Páginas públicas
+La aplicación usa rutas propias basadas en la ruta del navegador, no `react-router-dom`. Los enlaces normales cambian de página y `App.jsx` vuelve a elegir el componente correspondiente. Algunas vistas leen parámetros de consulta, por ejemplo `/producto?id=FR001`.
 
-### `index.html`
+Los datos de demostración se guardan en `localStorage`. No hay un servidor de aplicación ni una autenticación de producción; por tanto, los datos y las credenciales del proyecto son solamente para la demostración local.
 
-- Define la cabecera principal y la navegación del sitio.
-- Presenta el héroe de la página de inicio.
-- Muestra productos destacados con `data-id`, nombre y precio.
-- Sus botones son detectados por `js/formularios.js` para añadir productos al carrito.
-- Usa imágenes reales de `img/`.
-- Se corrigió el cierre faltante del contenedor del héroe.
-- Se corrigieron los IDs de naranjas (`FR002`) y plátanos (`FR003`).
+## 2. Ejecutar la aplicación
 
-### `productos.html`
+Abre una terminal en la carpeta raíz del proyecto, donde está `package.json`:
 
-- Construye el catálogo con tarjetas de productos.
-- Cada tarjeta contiene categoría, precio, stock, imagen y `data-id`.
-- El formulario de filtros permite combinar categoría y precio.
-- El atributo `data-img` es la ruta que `js/formularios.js` guarda en el carrito.
-- Se corrigió la ruta de la leche para que use `img/leche.jpg`.
-- Contiene el modal de detalles y reseñas; su estructura existe, pero la apertura completa requiere conectar listeners en JavaScript.
-
-### `detalle-producto.html`
-
-- Contiene la plantilla para un solo producto.
-- `js/datos-productos.js` toma el parámetro `id` de la URL.
-- El script completa nombre, precio, stock, origen, descripción e imagen.
-- También conecta el botón de añadir al carrito y las reseñas.
-
-### `carrito.html`
-
-- Muestra las líneas guardadas en `hh_carrito`.
-- Permite aumentar, disminuir y eliminar cantidades.
-- Presenta subtotal, despacho y total.
-- El botón de confirmación todavía funciona como simulación mediante `alert`.
-
-### `login.html`
-
-- Presenta el formulario de inicio de sesión.
-- `js/administracion.js` valida correo y contraseña.
-- La sesión válida se guarda en `sesion_activa`.
-- Los administradores son enviados al panel y los clientes al inicio.
-
-### `registro.html`
-
-- Presenta el formulario de creación de usuario.
-- Valida los datos antes de guardar la cuenta.
-- Los usuarios se almacenan en `usuarios_huerto`.
-
-### `perfil.html`
-
-- Permite ver y actualizar nombre, correo, teléfono, dirección y contraseña.
-- `js/administracion.js` carga los datos de `sesion_activa`.
-- La actualización también sincroniza el usuario almacenado.
-- Conviene reforzar la longitud mínima de la nueva contraseña.
-
-### `contacto.html`
-
-- Muestra datos de contacto y un formulario.
-- El formulario tiene estructura y estilos, pero actualmente no tiene un controlador JavaScript que procese el envío o muestre confirmación.
-
-### `seguimiento.html`
-
-- Presenta la búsqueda de un pedido y sus estados.
-- La lógica de seguimiento es principalmente demostrativa y depende del flujo definido en `js/formularios.js`.
-
-### `blog.html`
-
-- Muestra artículos y consejos en tarjetas.
-- Los enlaces `Leer consejo` todavía apuntan a `#`; no abren artículos independientes.
-
-### `nosotros.html`
-
-- Presenta la historia, propósito y valores de HuertoHogar.
-- Es una página informativa sin lógica de negocio compleja.
-
-## Páginas administrativas
-
-### `admin-dashboard.html`
-
-- Presenta el resumen del panel administrativo.
-- Usa la sesión de administrador y los estilos del panel.
-
-### `admin-productos.html`
-
-- Lista los productos guardados en `productos_huerto`.
-- Cada fila muestra imagen, nombre, categoría, precio, stock y acciones.
-- El enlace Editar abre `admin-editar-producto.html?id=...`.
-- El botón Eliminar borra el producto después de confirmación.
-- El botón Crear producto abre `admin-nuevo-producto.html`.
-
-### `admin-nuevo-producto.html`
-
-- Contiene el formulario para crear un producto.
-- El selector visual permite elegir una imagen real de `img/`.
-- El radio seleccionado actualiza el campo oculto que se guarda.
-- `js/administracion.js` valida nombre, precio y stock antes de persistir.
-
-### `admin-editar-producto.html`
-
-- Carga el producto indicado por el parámetro `id`.
-- Rellena sus campos y marca la imagen actual.
-- Permite actualizar o eliminar el producto.
-
-### `admin-usuarios.html`
-
-- Lista los usuarios almacenados en `usuarios_huerto`.
-- Cada fila enlaza con la edición del usuario correspondiente.
-
-### `admin-nuevo-usuario.html`
-
-- Permite registrar usuarios desde el panel.
-- Valida el formato de correo y evita duplicados en el alta.
-
-### `admin-editar-usuario.html`
-
-- Permite modificar nombre, correo, teléfono, dirección y rol.
-- El campo de contraseña está presente en HTML, pero la lógica actual no lo lee ni lo guarda; es una integración pendiente.
-- También conviene evitar que el correo editado coincida con el de otro usuario.
-
-## JavaScript
-
-### `js/inicializacion.js`
-
-- Define utilidades compartidas.
-- Escapa HTML cuando corresponde.
-- Inicializa funciones generales disponibles para todas las páginas.
-
-### `js/app.js`
-
-- Es el punto de entrada común de la aplicación.
-- Llama a inicializadores expuestos por los módulos cargados.
-
-### `js/carrito.js`
-
-- Lee y guarda el carrito en `hh_carrito`.
-- Normaliza productos antes de agregarlos.
-- Calcula cantidades y totales.
-- Renderiza las tarjetas del carrito.
-- Se corrigió el fallback de imagen para usar `img/manzanas-fuji.png`, que sí existe.
-
-### `js/formularios.js`
-
-- Procesa filtros de catálogo.
-- Conecta botones Añadir.
-- Construye el objeto que pasa al carrito.
-- Ejecuta validaciones de formularios públicos.
-- Se corrigió el fallback de imagen inexistente.
-- El buscador busca selectores que no están presentes actualmente en las páginas; debe añadirse el buscador o eliminarse esa lógica.
-
-### `js/datos-productos.js`
-
-- Contiene la fuente de datos de productos de detalle.
-- Busca productos por ID.
-- Renderiza los datos del detalle.
-- Guarda y muestra reseñas por producto.
-- Conecta el botón de añadir al carrito.
-- El modal antiguo de `productos.html` necesita listeners adicionales si se desea usarlo allí.
-
-### `js/administracion.js`
-
-- Crea la cuenta inicial de administrador.
-- Lee y cierra sesiones.
-- Oculta o muestra la interfaz de sesión.
-- Protege las páginas cuyo nombre comienza por `admin-`.
-- Administra el CRUD de usuarios.
-- Administra el CRUD de productos.
-- Inicializa productos de ejemplo con rutas existentes.
-- Se corrigió la lectura insegura de `sesion_activa` usando `try/catch`.
-- Aún conviene validar datos corruptos de usuarios antes de llamar a `toLowerCase()`.
-- Los datos de usuarios y productos deben escaparse antes de insertarse con `innerHTML`.
-
-## CSS
-
-### Bases globales
-
-- `css/variables.css`: colores, tipografías y tokens compartidos.
-- `css/reset.css`: reset y normalización global.
-
-### Componentes y páginas
-
-- `css/header.css`: cabecera, navegación, perfil y carrito.
-- `css/footer.css`: pie de página.
-- `css/buttons.css`: botones comunes.
-- `css/home.css`: héroe y contenido de inicio.
-- `css/catalogo.css`: filtros y tarjetas del catálogo.
-- `css/carrito.css`: tarjetas, cantidades y resumen del carrito.
-- `css/producto-detalle.css`: composición de la página de detalle.
-- `css/forms.css`: formularios públicos.
-- `css/admin.css`: panel, tarjetas, formularios, tabla y selector de imágenes administrativos.
-- `css/blog.css`: tarjetas del blog.
-- `css/nosotros.css`: sección informativa de Nosotros.
-- `css/perfil.css`: perfil de usuario.
-- `css/seguimiento.css`: formulario y estados de seguimiento.
-
-## Imágenes
-
-La carpeta `img/` contiene las imágenes que sí existen:
-
-- `espinaca.png`
-- `hero-campo.png`
-- `leche.jpg`
-- `manzanas-fuji.png`
-- `miel-organica.png`
-- `naranjas.jpg`
-- `pimentones.jpg`
-- `platanos.jpg`
-- `quinoa.jpg`
-- `zanahorias.png`
-
-Las rutas antiguas `img/producto1.jpg`, `img/producto2.jpg` e `img/producto3.jpg` no existen y fueron reemplazadas en los módulos afectados.
-
-## Estado de la revisión
-
-- El diagnóstico del editor no reporta errores en los archivos del proyecto.
-- Se corrigió el DOM incompleto de `index.html`.
-- Se corrigieron IDs de productos inconsistentes.
-- Se corrigió la imagen equivocada de la leche.
-- Se corrigieron fallbacks de imágenes inexistentes.
-- Se hizo segura la lectura de la sesión administrativa.
-- Pendientes funcionales: contacto, modal antiguo del catálogo, contraseña en edición de usuario, validación de duplicados al editar correo, protección contra HTML no escapado y confirmación de pedido persistente.
-
-## Respuestas rápidas para la ronda
-
-### ¿Cómo cambiar el fondo general del sitio?
-
-En `css/variables.css`, cambia el valor de `--bg-main`. Esta variable se reutiliza mediante `var(--bg-main)` en las páginas:
-
-```css
-/* Color de fondo general de todas las páginas que usan la variable. */
---bg-main: #FAF8F5;
+```bash
+npm install
+npm run dev
 ```
 
-### ¿Cómo cambiar el fondo de la página de inicio?
+Vite mostrará la dirección local (normalmente `http://localhost:5173/`). Ábrela en el navegador. El servidor de desarrollo actualiza la página cuando se guardan cambios.
 
-En `css/home.css`, modifica `background-image` dentro de `.home-hero` para cambiar la imagen principal:
+Comandos adicionales:
 
-```css
-/* Imagen que aparece detrás del texto principal del inicio. */
-background-image: url('../img/hero-campo.png');
+```bash
+npm run build     # genera la versión de producción en dist/
+npm run preview   # sirve localmente la última compilación
+npm run lint      # revisa el código con oxlint
+npm test          # ejecuta Vitest
+npm run test:karma # ejecuta las pruebas de componentes con ChromeHeadless
 ```
 
-Si se quiere cambiar el color de la capa oscura sobre la imagen, se modifica `background` dentro de `.home-hero::before`.
+`npm run preview` se ejecuta después de `npm run build`. Para `npm run test:karma` se necesita Google Chrome instalado.
 
-### ¿Cómo cambiar el color de fondo de la página de inicio?
+**Windows PowerShell:** si aparece un error indicando que la ejecución de `npm.ps1` está deshabilitada, usa `npm.cmd` en lugar de `npm` (por ejemplo, `npm.cmd run dev` o `npm.cmd test`). No hace falta cambiar la política de ejecución de PowerShell.
 
-La página de inicio usa `css/home.css`. Para cambiar el color de fondo de toda la página, agrega o modifica `body` en ese archivo. Por ejemplo, para usar un fondo verde muy claro en `index.html`:
+## 3. Pruebas y cobertura V8
 
-```css
-/* Fondo general de index.html. */
-body {
-	background-color: #EEF5E8;
-}
+El proyecto ya incluye `vitest` y el proveedor `@vitest/coverage-v8`. Para ejecutar las pruebas de Vitest con cobertura V8 y guardar el reporte en una carpeta separada:
+
+```bash
+npm test -- --coverage.enabled --coverage.provider=v8 --coverage.reportsDirectory=coverage-v8
 ```
 
-Si solo quieres cambiar el fondo del bloque principal de inicio y conservar la imagen, modifica `.home-hero`:
+Al terminar, abre `coverage-v8/index.html` para consultar el reporte navegable. También se muestra un resumen en la terminal. Si se omite `--coverage.reportsDirectory=coverage-v8`, Vitest usa `coverage/` como carpeta predeterminada; en este repositorio ya hay archivos de reporte allí, por eso se recomienda la carpeta separada.
 
-```css
-/* Fondo alternativo del hero de index.html cuando no se usa una imagen. */
-.home-hero {
-	background-image: none;
-	background-color: #2D5A27;
-}
+La suite de componentes también genera cobertura al ejecutar Karma:
+
+```bash
+npm run test:karma
 ```
 
-### ¿Cómo cambiar el color de fondo del catálogo?
+El reporte navegable queda en `coverage-karma/html/index.html` y el resumen aparece en la terminal. Karma instrumenta con Istanbul el código de aplicación que carga la suite, no todos los archivos de la aplicación.
+
+La cobertura indica qué partes del código alcanzan las pruebas ejecutadas: no significa que toda la aplicación tenga cobertura completa. En la ejecución revisada para esta guía, Vitest pasó **14/14 pruebas en 10 archivos** y V8 registró **77,45 % de sentencias, 72,97 % de ramas, 78,37 % de funciones y 79,26 % de líneas** en los módulos de lógica alcanzados. Karma/Jasmine pasó **10/10 pruebas** y el reporte Istanbul registró **85,41 % de sentencias, 73,21 % de ramas, 76,92 % de funciones y 90,47 % de líneas** en los módulos cargados por las pruebas de componentes. Son dos mediciones separadas y parciales; no se deben sumar ni presentar como cobertura de toda la aplicación.
+
+## 4. Entrada de la aplicación y estilos globales
+
+| Archivo | Responsabilidad y relación con la página |
+| --- | --- |
+| `index.html` | Documento HTML de Vite: idioma, metadatos, favicon, contenedor `#root` y carga de `src/main.jsx`. No contiene las páginas React. |
+| `src/main.jsx` | Punto de entrada React. Importa Bootstrap, `src/index.css` y `App.jsx`, y renderiza la aplicación en `#root` dentro de `StrictMode`. |
+| `src/App.jsx` | Mapa de rutas públicas y administrativas, títulos de pestaña, inicialización de usuarios de demostración, protección del panel, página 404 y composición de cabecera/pie. |
+| `src/index.css` | Reglas globales para tipografía, color base, ancho mínimo y altura de `#root`. |
+| `src/App.css` | Ajustes transversales y adaptables: cabecera, acciones de sesión y carrito, tarjetas del catálogo, detalle de producto, mensajes, cantidades, reseñas y modales. Complementa las hojas temáticas. |
+
+### Composición y protección de rutas
+
+- En páginas públicas, `App.jsx` dibuja `SiteHeader`, la página seleccionada y `SiteFooter`.
+- En rutas que empiezan por `/admin`, `ProtectedAdmin` comprueba que la sesión tenga el rol `admin`; si no, redirige a `/cuenta`. Las páginas administrativas se muestran dentro de `AdminShell`.
+- Si la ruta no existe, se muestra la vista 404 entre la cabecera y el pie.
+- `App.jsx` también establece el título del documento y llama a `ensureSeedUsers()` para preparar las cuentas de demostración.
+
+## 5. Páginas: archivo y ubicación en el sitio
+
+Cada archivo de esta tabla está dentro de `src/pages/`. La ruta se define en `src/App.jsx`.
+
+| Archivo | Ruta | Qué muestra y dónde aparece |
+| --- | --- | --- |
+| `HomePage.jsx` | `/` | Página de inicio: sección principal/hero y selección de productos destacados. |
+| `CatalogPage.jsx` | `/catalogo` | Catálogo con búsqueda, filtros y resultados en tarjetas de productos. |
+| `OffersPage.jsx` | `/ofertas` | Productos con descuento y contenido de ofertas. |
+| `ProductDetailPage.jsx` | `/producto?id=...` | Ficha individual: imagen, datos, precio, cantidad, compra y contenido propio del producto. |
+| `CartPage.jsx` | `/carrito` | Carrito, cantidades, resumen de compra y flujo de confirmación con comprobante. |
+| `AboutPage.jsx` | `/nosotros` | Historia, misión, visión, compromiso, redes y selección de sucursal/mapa. |
+| `BlogPage.jsx` | `/blog` | Listado de artículos y lectura del artículo seleccionado. |
+| `ContactPage.jsx` | `/contacto` | Datos y formulario de contacto. |
+| `TrackingPage.jsx` | `/seguimiento` | Búsqueda de pedido y visualización de sus etapas de entrega. |
+| `LoginPage.jsx` | `/cuenta` | Formulario de inicio de sesión. |
+| `RegisterPage.jsx` | `/registro` | Formulario para crear una cuenta de cliente. |
+| `ProfilePage.jsx` | `/perfil` y `/admin/perfil` | Datos y edición del perfil; `adminMode` adapta su uso desde el panel. |
+| `AdminDashboardPage.jsx` | `/admin` | Resumen y cifras principales del panel administrativo. |
+| `AdminOrdersPage.jsx` | `/admin/ordenes` | Tabla/listado de órdenes, datos del cliente y estado de pedidos. |
+| `AdminProductsPage.jsx` | `/admin/productos` | Administración del catálogo: listado y acciones sobre productos. |
+| `AdminProductFormPage.jsx` | `/admin/productos/nuevo`, `/admin/productos/editar?id=...` | Formulario compartido para crear y editar productos, con categoría, precio, descuento, stock e imagen. |
+| `AdminCriticalProductsPage.jsx` | `/admin/productos-criticos` | Productos cuyo stock se considera crítico (10 o menos). |
+| `AdminCategoriesPage.jsx` | `/admin/categorias` | Consulta y edición de categorías usadas para clasificar productos. |
+| `AdminUsersPage.jsx` | `/admin/usuarios` | Administración y listado de cuentas de usuario. |
+| `AdminUserFormPage.jsx` | `/admin/usuarios/nuevo`, `/admin/usuarios/editar?id=...` | Formulario compartido para crear y editar usuarios. |
+| `AdminUserHistoryPage.jsx` | `/admin/usuarios/historial?id=...` | Historial de compras asociado a un usuario. |
+| `AdminReportsPage.jsx` | `/admin/reportes` | Resúmenes e informes de ventas del panel. |
+| `Pag1Bootstrap.jsx` | `/bootstrap/alertas` | Página de demostración de alertas y botones de React Bootstrap. |
+| `Pag2Bootstrap.jsx` | `/bootstrap/productos` | Página de demostración de productos con React Bootstrap. |
+| `Pag3Bootstrap.jsx` | `/bootstrap/ayuda` | Página de demostración de contenido de ayuda con React Bootstrap. |
+
+Las rutas administrativas comparten la estructura visual de `AdminShell`; las dos rutas de formulario reutilizan el mismo componente con una propiedad `edit` para distinguir creación y edición.
+
+## 6. Componentes reutilizables y lugar donde aparecen
+
+Todos están en `src/components/`. Se encargan de una pieza de interfaz o interacción para que las páginas no repitan su implementación.
+
+| Archivo | Función y ubicación |
+| --- | --- |
+| `SiteHeader.jsx` | Cabecera global de las páginas públicas: marca, navegación, sesión, acceso al panel cuando corresponde y carrito con contador. Escucha cambios de sesión y carrito para actualizarse. |
+| `SiteFooter.jsx` | Pie de página compartido al final de las vistas públicas y de la página 404. |
+| `AdminShell.jsx` | Estructura común de administración: barra lateral, navegación del panel, título y espacio de contenido. Envuelve las páginas administrativas autorizadas. |
+| `ProductCard.jsx` | Tarjeta de producto con imagen, nombre, precio/descuento, stock cuando aplica y acción de añadir. Se muestra en los productos destacados del inicio y en los resultados de catálogo y ofertas. Delega la compra a `onAdd`. |
+| `CatalogFilters.jsx` | Controles de búsqueda y filtros de categoría/precio en la columna de filtros de `/catalogo`; recibe y actualiza el estado desde `CatalogPage`. |
+| `FormField.jsx` | Presentación reutilizable de etiqueta, control y ayuda en formularios de contacto, acceso, registro, perfil y seguimiento. |
+| `QuantityControl.jsx` | Selector de cantidad con límites y botones para incrementar/decrementar; se muestra en `/carrito` y en el detalle de producto. |
+| `OrderReceiptModal.jsx` | Diálogo del comprobante que aparece al finalizar una compra en `/carrito`, con resumen del pedido y acción de cierre. |
+| `StatusMessage.jsx` | Mensaje accesible de estado (por ejemplo, error o éxito), anunciado con `aria-live`. Se usa en formularios y acciones. |
+| `StatusTimeline.jsx` | Secuencia visual de estados del pedido: confirmado, preparación, camino y entregado. Se muestra en `/seguimiento`. |
 
-La página `productos.html` usa `css/catalogo.css`. Para cambiar el fondo de toda la página, agrega o modifica `body` en ese archivo. Por ejemplo:
+## 7. Lógica y datos (`src/js/`)
 
-```css
-/* Fondo general de productos.html. */
-body {
-	background-color: #F3F0E8;
-}
-```
+| Archivo | Responsabilidad |
+| --- | --- |
+| `products.js` | Catálogo inicial de productos e imágenes importadas; resuelve imágenes de productos administrados y normaliza/calcula descuentos y precios finales. |
+| `storage.js` | Lectura y escritura de `localStorage`, saneamiento básico de valores recuperados, cuentas de demostración, sesión, usuarios, pedidos, carrito y combinación de productos del catálogo base con los administrados. También emite eventos para sincronizar la interfaz. |
+| `adminData.js` | Funciones y opciones de datos usadas por el panel, como productos, categorías e imágenes disponibles en el formulario. |
+| `format.js` | Formateo de valores monetarios para mostrarlos como precios en pesos chilenos. |
+| `delivery.js` | Cálculo de la fecha mínima disponible para coordinar una entrega. |
+| `validation.js` | Reglas reutilizables de validación, incluida la expresión de correo aceptada por los formularios. |
+| `useTransientFeedback.js` | Hook que activa temporalmente una confirmación visual después de una acción, como añadir un producto. |
 
-Para cambiar únicamente el fondo de las tarjetas del catálogo, modifica `.cart-card`, que también es la base visual de `.producto-card`:
+### Persistencia de demostración
 
-```css
-/* Fondo de las tarjetas de productos en productos.html. */
-.cart-card {
-	background: #FFFFFF;
-}
-```
+`storage.js` usa claves de `localStorage` para usuarios (`usuarios_huerto`), pedidos (`hh_pedidos`), sesión (`sesion_activa`) y carrito (`hh_carrito`, junto con su contador). La interfaz notifica cambios del carrito y sesión mediante eventos del navegador para que la cabecera pueda refrescarse. La persistencia local sirve para probar el flujo, pero no reemplaza una API o una base de datos.
 
-Si el cambio debe aplicarse solo a las tarjetas del catálogo y no a otras tarjetas que reutilicen `.cart-card`, usa un selector más específico:
+## 8. Flujo de compra: qué ocurre al comprar
 
-```css
-/* Fondo exclusivo de las tarjetas de productos del catálogo. */
-.producto-card {
-	background: #FFFFFF;
-}
-```
+El recorrido de compra conecta las páginas, los componentes reutilizables y las funciones de almacenamiento. Se puede explicar así:
 
-Después de guardar, recarga `index.html` o `productos.html` en el navegador. Si el color no cambia, revisa que la hoja correspondiente esté enlazada y que otra regla CSS más específica no esté sobrescribiendo el valor.
+1. **Elegir un producto.** En el inicio, el catálogo y las ofertas se muestran tarjetas `ProductCard`. La tarjeta recibe el producto y la función `addCartItem` por la propiedad `onAdd`. En el detalle (`/producto?id=...`), la página obtiene el producto del catálogo, permite elegir unidades con `QuantityControl` y llama directamente a `addCartItem`.
+2. **Añadirlo al carrito.** `addCartItem` (`src/js/storage.js`) lee el carrito guardado con `getCart()`. Si el mismo identificador ya está, suma la cantidad; si no, crea una línea con identificador, nombre, precio vigente, imagen y cantidad. El precio usa el valor con descuento cuando existe. Luego `saveCart()` guarda el carrito en `hh_carrito`, recalcula el total de unidades en `hh_carrito_cantidad` y emite `hh:cart-change`.
+3. **Actualizar el indicador de la cabecera.** `SiteHeader` (`src/components/SiteHeader.jsx`) obtiene el total con `getItemCount()` y escucha `hh:cart-change` (además del evento `storage`). Por eso el número junto al ícono de carrito refleja la suma de unidades, no la cantidad de líneas distintas. El ícono es un enlace a `/carrito`; `App.jsx` asocia esa ruta con `CartPage`.
+4. **Revisar y editar el pedido.** `CartPage` carga las líneas con `getCart()`. `QuantityControl` permite modificar cada cantidad y el botón de eliminar quita esa línea; ambas acciones llaman a `updateCart()`, que actualiza el estado de React y persiste el resultado mediante `saveCart()`. El subtotal es la suma de precio por cantidad. El despacho cuesta `$2.990 CLP` cuando el subtotal es menor a `$25.000 CLP`; desde ese umbral es gratis. El total mostrado suma subtotal y despacho.
+5. **Elegir fecha de entrega.** El campo de fecha conserva su valor en `hh_fecha_entrega`, y `getMinimumDeliveryDate()` establece hoy como fecha mínima seleccionable. Esa fecha se muestra como dato del pedido; en el código actual no es una condición obligatoria para confirmar.
+6. **Confirmar.** Al pulsar **Confirmar pedido**, `confirmOrder()` comprueba que haya al menos un producto. Si el carrito está vacío, presenta un mensaje y no registra nada. Si tiene productos, crea el pedido con un código `HH-` y cinco dígitos, fecha de creación, fecha de entrega (o “Fecha por confirmar”), líneas, subtotal, despacho, total, estado inicial y, si hay una sesión, sus datos de cliente. Guarda el pedido más reciente en `hh_ultimo_pedido`, lo agrega al comienzo de `hh_pedidos` y vacía el carrito con `saveCart([])`.
+7. **Mostrar comprobante y permitir seguimiento.** `CartPage` entrega el pedido a `OrderReceiptModal`. El diálogo enseña el código, la entrega y el total, y su enlace **Ver seguimiento** abre `/seguimiento?codigo=...`. `TrackingPage` busca el código en `hh_pedidos` y representa el estado con `StatusTimeline`.
 
-### ¿Cómo cambiar el color de los botones?
+**Importante para explicarlo con precisión:** este proyecto registra un pedido de demostración en el almacenamiento local del navegador. No procesa un pago real, no envía el pedido a un servidor y no descuenta ni valida inventario al confirmar. El botón dice “Confirmar pedido”, pero no está conectado a una pasarela de pago.
 
-En `css/variables.css`, cambia `--primary-green` para el color principal y `--primary-hover` para el color al pasar el mouse. Los botones usan esas variables desde `css/buttons.css`, `css/home.css` y `css/admin.css`.
+## 9. Conexiones entre controles y código
 
-### ¿Cómo cambiar el título de una página?
+| Control o acción visible | Con qué está conectado | Resultado |
+| --- | --- | --- |
+| Ícono/botón de carrito en la cabecera | Enlace `href="/carrito"` de `SiteHeader` → ruta `/carrito` en `App.jsx` → `CartPage` | Abre el carrito. El contador consulta `getItemCount()` y se actualiza al recibir `hh:cart-change`. |
+| “Añadir” en una tarjeta de producto | `ProductCard` → propiedad `onAdd` → `addCartItem()` | Agrega una unidad o aumenta la cantidad de ese producto; muestra una confirmación visual temporal. |
+| “Añadir al Carrito” en la ficha | `ProductDetailPage` → `QuantityControl` + `addCartItem(displayProduct, quantity)` | Agrega al carrito la cantidad seleccionada. |
+| Filtros y búsqueda del catálogo | `CatalogFilters` → estado de `CatalogPage` → filtrado de `getCatalogProducts()` | Cambia los productos visibles por categoría, rango de precio o texto. |
+| Botones `+` y `−` del carrito | `QuantityControl` → `onChange` de `CartPage` → `updateCart()` → `saveCart()` | Cambia unidades, subtotal, despacho, total y contador de la cabecera. El rango permitido es de 1 a 999 unidades por línea. |
+| Botón de eliminar del carrito | Acción en `CartPage` → `updateCart()` → `saveCart()` | Quita el producto y recalcula los importes y el contador. |
+| Campo “Fecha de entrega” del carrito | Estado `delivery` de `CartPage` → `writeStorage('hh_fecha_entrega', ...)` | Conserva la fecha elegida en el navegador para mostrarla al crear el pedido. |
+| “Confirmar pedido” | `CartPage.confirmOrder()` → `createOrder()` → `writeStorage()` | Registra el pedido localmente, vacía el carrito y abre el comprobante; no cobra. |
+| “Ver seguimiento” del comprobante | Enlace a `/seguimiento?codigo=...` → `TrackingPage` → `getOrders()` | Consulta el pedido por su código y muestra su etapa. |
+| “Salir” | `SiteHeader.logout()` → elimina `sesion_activa` → evento `hh:session-change` | Cierra la sesión local, actualiza la cabecera y vuelve al inicio. |
 
-El título visible se encuentra en el elemento `<h1>` o `<h2>` de cada archivo HTML. El título de la pestaña del navegador se cambia en `<title>` dentro de `<head>`.
+### Respuesta modelo para una evaluación oral
 
-### ¿Cómo agregar un producto al catálogo?
+> “El proceso empieza cuando añado un producto desde una tarjeta o desde su detalle. Ambos caminos llaman a `addCartItem` de `storage.js`, que identifica el producto por su ID: si ya estaba, aumenta su cantidad; si no, crea una línea con el precio vigente y sus datos. `saveCart` persiste el carrito en `localStorage`, guarda el total de unidades y emite un evento. La cabecera escucha ese evento y actualiza el contador. El ícono del carrito es un enlace a `/carrito`, ruta que `App.jsx` conecta con `CartPage`. Allí puedo cambiar cantidades o eliminar productos; cada cambio se vuelve a guardar, y la página calcula subtotal, despacho y total. Al confirmar, se valida que el carrito no esté vacío, se construye y guarda el pedido, se vacía el carrito y aparece el comprobante. Desde ese comprobante paso el código a seguimiento. Es un flujo funcional de demostración local: no realiza un cobro real ni usa un servidor.”
 
-En `productos.html`, se duplica una tarjeta `.producto-card` y se actualizan `data-id`, `data-nombre`, `data-precio`, `data-img`, descripción, stock e imagen. `js/formularios.js` lee esos atributos al pulsar Añadir.
+## 10. Revisión de la rúbrica
 
-### ¿Cómo cambiar una imagen de producto?
+La pauta tiene una parte grupal (Situación evaluativa 1) y una presentación individual (Situación evaluativa 2). Esta tabla relaciona los ocho indicadores con evidencia y con el estado comprobable del repositorio. Los indicadores individuales evalúan la presentación de cada estudiante y no pueden darse por aprobados solo porque exista código o una guía.
 
-Se cambia el atributo `src` de la imagen HTML o el valor `data-img` de la tarjeta. Las rutas válidas actuales están listadas en la sección Imágenes de esta guía.
+| Indicador | Estado del proyecto revisado | Evidencia y alcance |
+| --- | --- | --- |
+| **Grupal IE2.1.1** | Diseño frontend funcional con framework JavaScript. | **Cumplido en la implementación revisada.** React y Vite organizan rutas, páginas, componentes, lógica y estilos; el build de producción termina correctamente. La tienda es una demostración frontend local, no un servicio con backend. |
+| **Grupal IE2.1.2** | Componentes React con props/estado y diseño responsivo mediante Bootstrap. | **Cumplido en el código revisado.** `ProductCard` recibe `product`, `featured` y `onAdd`; `QuantityControl` recibe `value` y `onChange`; páginas gestionan estado con hooks. `main.jsx` importa Bootstrap CSS, la interfaz usa grilla responsive (`col-12`, `col-sm-6`, `col-xl-4`) y CSS propio con `@media`. |
+| **Grupal IE2.2.1** | Diez pruebas unitarias de componentes con Jasmine/Karma. | **Cumplido en la última ejecución.** `components.karma.jsx` contiene 10 casos y `npm run test:karma` terminó con **10/10 SUCCESS** en ChromeHeadless. |
+| **Grupal IE2.3.1** | Configuración, pruebas, mocks, análisis de resultados y cobertura. | **Implementado, con cobertura parcial.** Karma configura Jasmine, Webpack/Babel, ChromeHeadless e Istanbul; hay spies Jasmine y mocks de almacenamiento para Vitest. Ambas suites producen resultados y reportes de cobertura descritos en la sección 3. La cobertura no es exhaustiva para toda la aplicación. |
+| **Individual IE2.1.3** | Exponer el diseño y construcción de la aplicación frontend. | **No verificable desde el repositorio.** El código y las preguntas de la sección 11 dan material para explicar arquitectura, navegación, componentes y compra; cada estudiante debe exponerlo con claridad. |
+| **Individual IE2.1.4** | Mostrar componentes, props, estado y responsividad Bootstrap. | **No verificable hasta la presentación.** El proyecto incluye ejemplos demostrables de props, estado y grilla adaptable; el/la estudiante debe mostrarlos y explicar el flujo. |
+| **Individual IE2.2.2** | Demostrar las diez pruebas Jasmine/Karma y su aporte a la calidad. | **Preparado, pero depende de la demostración individual.** Las diez pruebas pasan; se deben ejecutar y explicar las acciones y expectativas durante la presentación. |
+| **Individual IE2.3.2** | Explicar configuración, pruebas, mocks y análisis de resultados. | **Preparado, pero depende de la explicación individual.** La configuración y los reportes están disponibles; el/la estudiante debe explicar qué mide cada uno y sus límites. |
 
-### ¿Cómo funciona el carrito?
+**Validación realizada en esta revisión:** `npm run build` terminó correctamente, `npm run lint` no reportó problemas, `npm test` pasó **14/14** y `npm run test:karma` pasó **10/10**. En navegador, a **375 px** de ancho no se observó desbordamiento horizontal en inicio; también se comprobó que la tarjeta de manzanas ahora muestra `$1.200 CLP` como precio anterior y `$1.080 CLP` como precio rebajado.
 
-`js/carrito.js` usa `localStorage` con la clave `hh_carrito`. `addToCart()` agrega o incrementa productos; `renderCart()` dibuja las tarjetas, calcula subtotal, despacho, total y huella; `initCart()` conecta los botones +, -, eliminar y confirmar.
+### Brechas que aún no se deben presentar como resueltas
 
-### ¿Cómo se confirma un pedido?
+- El proyecto importa **Bootstrap CSS** y usa sus clases utilitarias y grilla; también tiene reglas responsivas propias. Aunque `react-bootstrap` figura como dependencia, la interfaz descrita aquí demuestra el uso del CSS de Bootstrap y no depende de componentes importados desde esa biblioteca.
+- La cobertura V8 y la de Istanbul corresponden a suites y módulos medidos distintos; no equivalen a una medición completa del frontend.
+- Los criterios individuales no se pueden corregir solo modificando el software: cada integrante debe poder presentar y responder preguntas por sí mismo.
+- El carrito, los usuarios de prueba y los pedidos se guardan en `localStorage`; en consecuencia, la aplicación es una demostración frontend y no un sistema conectado a un backend o una pasarela de pago.
 
-El botón `#btn-confirmar-pedido` ejecuta `confirmOrder()` en `js/carrito.js`. La función genera un código `HH-xxxxx`, guarda el pedido en `hh_ultimo_pedido` y `hh_pedidos`, limpia el carrito y muestra la boleta.
+## 11. Preguntas individuales y respuestas para practicar
 
-### ¿Cómo funciona el seguimiento?
+Las respuestas son modelos para comprender y adaptar al exponer. Conviene poder señalar el archivo y demostrar el comportamiento, en vez de memorizar únicamente el texto.
 
-`js/formularios.js` lee el código de la URL o de `hh_ultimo_pedido`. Al enviar `#form-rastreo`, busca el pedido guardado y activa los pasos de `#linea-tiempo`.
+### Diseño y construcción frontend
 
-### ¿Cómo cambiar una dirección del mapa?
+**1. ¿Cómo está diseñada y organizada la aplicación?**
 
-En `nosotros.html`, cada botón `.btn-ciudad` tiene `data-direccion` para el texto y opcionalmente `data-mapa` para coordenadas exactas. `initLocationsMap()` en `js/formularios.js` usa esos datos al pulsar la ciudad.
+> “Es una aplicación frontend construida con React y Vite. `index.html` contiene el nodo `root`; `main.jsx` importa Bootstrap CSS y monta React; `App.jsx` decide qué página mostrar según la ruta. Separé las vistas en `pages`, piezas reutilizables en `components`, lógica de datos y persistencia en `js`, y estilos por sección en `styles`. Eso permite ubicar cada responsabilidad y reutilizar componentes, por ejemplo la tarjeta de producto en inicio, catálogo y ofertas.”
 
-### ¿Cómo funciona el inicio de sesión?
+**2. ¿Cómo navega entre páginas y dónde se conectan los controles con sus destinos?**
 
-`js/administracion.js` valida `#form-login`. Si las credenciales coinciden, guarda el usuario en `sesion_activa`. Si no existe esa clave, el sitio muestra `Mi cuenta`; no se crea una sesión automática.
+> “No usamos `react-router-dom`: `App.jsx` tiene mapas de rutas y compara `window.location.pathname`. Los enlaces son enlaces normales del navegador. Por ejemplo, el ícono de carrito apunta a `/carrito`, y el mapa de rutas hace que esa URL renderice `CartPage`. La ficha usa un parámetro de consulta, como `/producto?id=FR001`, que `ProductDetailPage` lee con `URLSearchParams`.”
 
-## Respuestas para las preguntas del profesor
+**3. ¿Qué sucede desde que se añade un producto hasta que se consulta el pedido?**
 
-### ¿Cómo hago una validación de contraseña entre 18 y 100 caracteres?
+> “La tarjeta o la ficha llama a `addCartItem`; esa función consolida la cantidad por ID y `saveCart` persiste el carrito y emite el evento que actualiza el contador del encabezado. En `/carrito` se recalculan cantidades e importes. Al confirmar, se guarda un pedido local con código, datos y estado inicial, se vacía el carrito y aparece el comprobante. El código abre la vista de seguimiento. Es importante precisar que se trata de una simulación local: no se cobra ni se contacta un servidor.”
 
-Se combinan dos niveles de validación. En el HTML se puede indicar el rango para que el navegador lo conozca:
+### Componentes, props, estado y responsividad
 
-```html
-<input type="password" id="password" minlength="18" maxlength="100" required>
-```
+**4. ¿Cómo se comunican las propiedades y el estado entre componentes?**
 
-En JavaScript se valida el valor antes de guardar o enviar el formulario:
+> “Las propiedades llevan datos o callbacks del padre al hijo. Por ejemplo, `CatalogPage` entrega a `ProductCard` el objeto `product` y `addCartItem` como `onAdd`; la tarjeta no escribe el almacenamiento directamente, sino que llama al callback recibido. `QuantityControl` también es controlado: recibe `value` y `onChange`; el padre conserva el estado y decide qué hacer con la nueva cantidad. En páginas se usan hooks como `useState` para datos que cambian y provocan el render correspondiente.”
 
-```javascript
-const password = campoPassword.value;
-if (password.length < 18 || password.length > 100) {
-	mostrarError(campoPassword, 'La contraseña debe tener entre 18 y 100 caracteres.');
-	return false;
-}
-```
+**5. ¿Cómo se implementó el diseño responsivo y qué aporta Bootstrap?**
 
-`minlength` y `maxlength` ayudan al navegador, pero la comprobación de JavaScript es necesaria porque permite mostrar un mensaje propio y detener el registro. Para un nombre se aplica la misma idea, pero normalmente se permiten solo letras y se define un rango, por ejemplo: `^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,50}$`.
+> “`main.jsx` importa la hoja de Bootstrap 5. Las vistas usan la grilla responsive: en el catálogo, por ejemplo, las tarjetas ocupan todo el ancho en móvil, dos columnas desde `sm` y tres desde `xl`, usando `col-12 col-sm-6 col-xl-4`. Además, CSS propio define ajustes con `@media` para cabecera, carrito, administración y otras áreas. Así Bootstrap aporta una base de grilla/utilidades y el CSS del proyecto adapta detalles particulares.”
 
-### ¿Cómo cambio la contraseña para que acepte entre 3 y 12 caracteres?
+### Pruebas unitarias, mocks y resultados
 
-Se reemplaza la condición actual de `js/formularios.js`, que exige mínimo 8 caracteres, por una comprobación de mínimo y máximo:
+**6. ¿Cómo se configuró y cómo se ejecuta la suite de componentes?**
 
-```javascript
-if (valor.length < 3 || valor.length > 12) {
-	mostrarError(campoPassword, 'La contraseña debe tener entre 3 y 12 caracteres.');
-	return false;
-}
-```
+> “Karma está configurado en `karma.conf.cjs` con Jasmine como framework, `karma-entry.jsx` como entrada, Webpack y Babel para transformar JSX, y ChromeHeadless como navegador sin interfaz. `npm run test:karma` ejecuta una sola corrida. En la última ejecución se compilaron los casos y ChromeHeadless informó 10 de 10 exitosos.”
+> “Además, Babel instrumenta el código fuente que carga esa suite con Istanbul; Karma presenta el resumen y crea el reporte HTML `coverage-karma/html/index.html` para inspeccionar líneas, funciones, ramas y sentencias cubiertas.”
 
-También se actualiza el campo de `registro.html` para mantener la validación del navegador:
+**7. ¿Qué 10 pruebas de componentes se hicieron y qué validan?**
 
-```html
-<input type="password" id="password" minlength="3" maxlength="12">
-```
+> “La suite prueba: (1) incremento en `QuantityControl`; (2) decremento; (3) límites mínimo y máximo; (4) que `StatusMessage` no renderice vacío; (5) rol de alerta y anuncio accesible para error; (6) rol de estado y anuncio para éxito; (7) pasos completados y paso actual en `StatusTimeline`; (8) asociación entre etiqueta y campo en `FormField`; (9) búsqueda y limpieza de filtros en `CatalogFilters`; y (10) que `ProductCard` llame `onAdd` con el producto correcto. Se pueden ver los eventos simulados y las expectativas en `src/test/components/components.karma.jsx`.”
 
-Si se mantiene la regla de seguridad del proyecto, además se comprueba que contenga al menos una letra y un número. La misma regla debe revisarse en `js/administracion.js` para que el inicio de sesión no use un límite diferente al registro.
+**8. ¿Qué es un mock o un spy y dónde se utiliza en este proyecto?**
 
-### ¿Cómo valido el correo para que también sea posible usar `@simio`?
+> “Se usa para aislar la unidad bajo prueba y controlar dependencias externas o callbacks. En Karma, `jasmine.createSpy` permite comprobar que `onChange`, `onAdd` o los setters se llamen con los argumentos esperados, sin ejecutar una acción real del padre. En Vitest, `src/test/testUtils.js` reemplaza `localStorage` y parte de `window` con funciones simuladas y un mapa en memoria; así cada prueba puede preparar datos y verificar escrituras/eventos sin depender del almacenamiento real del navegador.”
 
-La regla se encuentra en `REGEX_EMAIL_GMAIL_HOTMAIL`, definida en `js/formularios.js` y `js/administracion.js`. Se cambia para incluir el dominio solicitado:
+**9. ¿Qué diferencia hay entre las pruebas de Vitest y las de Karma/Jasmine?**
 
-```javascript
-const REGEX_EMAIL = /^[^\s@]+@(gmail|hotmail|simio)\.[a-z]{2,}$/i;
-```
+> “Vitest ejecuta las pruebas de lógica de catálogo, carrito, sesión y almacenamiento con `npm test`; en la ejecución revisada pasaron 14 pruebas en 10 archivos. Karma/Jasmine ejecuta por separado los 10 casos de componentes React en ChromeHeadless. No se deben sumar como si fueran una única corrida ni confundir el reporte V8 con la suite de Karma.”
 
-Después se usa `REGEX_EMAIL.test(correo)` en la validación. Si la intención es aceptar exactamente correos terminados en `@simio` sin extensión, la expresión sería diferente:
+**10. ¿Cómo se interpreta el informe de cobertura y qué conclusión se puede presentar?**
 
-```javascript
-const REGEX_EMAIL_SIMIO = /^[^\s@]+@simio$/i;
-```
+> “El informe V8 registra líneas, sentencias, funciones y ramas alcanzadas por las pruebas Vitest. En esta ejecución reportó 79,26 % de líneas, 77,45 % de sentencias, 78,37 % de funciones y 72,97 % de ramas. Significa que queda código sin ejecutar por estas pruebas; no significa que el 79,26 % de toda la aplicación esté probado, porque la medición se concentra en los módulos instrumentados y no incluye Karma. Las pruebas pasaron, pero aún hay margen para agregar casos y subir la cobertura.”
+>
+> “Por separado, Karma/Istanbul ejecutó 10 de 10 casos y reportó 90,47 % de líneas y 73,21 % de ramas en los módulos cargados por la suite de componentes. Ese porcentaje tampoco representa toda la app: mide solo el código instrumentado que realmente entró en esa suite. No mezclo ni sumo ambos porcentajes; los presento con su herramienta, alcance y limitación.”
 
-El cambio debe hacerse en los dos módulos y también en los mensajes de error para que no sigan diciendo que solo se aceptan Gmail y Hotmail. Para un dominio de correo real normalmente se conserva una extensión, como `.com`.
+### Guion breve de demostración individual
 
-### ¿Cómo agrego un cuarto producto si antes había tres?
+1. Explicar la ruta de entrada: `index.html` → `main.jsx` → `App.jsx`.
+2. Mostrar un producto y añadirlo desde tarjeta o detalle; señalar `ProductCard`, `onAdd` y `addCartItem`.
+3. Abrir el ícono del carrito; cambiar cantidad y explicar `QuantityControl`, `saveCart` y el contador.
+4. Confirmar un pedido de demostración, enseñar el comprobante y abrir el seguimiento; aclarar que no existe pago/backend real.
+5. Ejecutar `npm run test:karma` para enseñar los 10 casos y `npm test` para la suite de lógica; si preguntan por cobertura, ejecutar el comando V8 de la sección 3 y explicar su alcance parcial.
 
-Se copia una tarjeta `.producto-card` en `productos.html` y se cambian todos sus datos: `data-id`, nombre, precio, categoría, stock, `data-img`, descripción y la imagen. El nuevo `data-id` debe ser único para que el carrito no lo confunda con otro producto.
+## 12. Hojas de estilo (`src/styles/`)
 
-```html
-<article class="cart-card producto-card" data-categoria="frutas"
-	data-precio="1100" data-nombre="Peras"
-	data-img="img/peras.jpg">
-	<img src="img/peras.jpg" alt="Peras frescas">
-	<h3 class="serif">Peras frescas</h3>
-	<p class="unit-price">$1.100 CLP / kg</p>
-	<button class="btn-checkout btn-agregar" data-id="FR004">Añadir</button>
-</article>
-```
+`App.jsx` importa las hojas compartidas. Estas clases y estilos determinan la apariencia de la página donde se rendericen los componentes correspondientes.
 
-También se agrega la imagen a `img/` y se verifica que la ruta exista. `js/formularios.js` detecta la tarjeta y `js/carrito.js` usa el ID para agregarla al carrito. Actualmente el catálogo principal tiene más de cuatro tarjetas; si la pregunta se refiere a los productos destacados de `index.html`, se agrega una cuarta tarjeta con un `data-id` distinto.
+| Archivo | Área de la interfaz |
+| --- | --- |
+| `variables.css` | Colores, tipografías y variables visuales que reutilizan las demás hojas. |
+| `reset.css` | Normalización y reglas base para que los elementos comiencen con estilos consistentes. |
+| `header.css` | Barra superior, marca, navegación y estados de la cabecera. |
+| `footer.css` | Columnas, marca y enlaces del pie de página. |
+| `buttons.css` | Botones y variantes compartidas. |
+| `home.css` | Hero, bloques y tarjetas destacadas de inicio. |
+| `catalogo.css` | Filtros y cuadrícula de resultados del catálogo. |
+| `carrito.css` | Líneas del carrito, selector de unidades, resumen y comprobante de compra. |
+| `forms.css` | Campos, etiquetas, ayudas y mensajes de formularios. |
+| `perfil.css` | Secciones del perfil de cliente y de administración. |
+| `seguimiento.css` | Búsqueda y línea de progreso del pedido. |
+| `producto-detalle.css` | Distribución de imagen, información y compra del detalle de producto. |
+| `nosotros.css` | Historia, misión/visión, sucursales y secciones informativas. |
+| `blog.css` | Tarjetas y contenido de artículos del blog. |
+| `admin.css` | Panel administrativo: barra lateral, cabecera, tablas, estadísticas, formularios y selector de imágenes. |
 
-### ¿Cómo agrego un código de Copilot a VS Code?
+`src/App.css` añade correcciones y reglas responsivas que cruzan más de una sección (por ejemplo, ajustes de tarjetas y cabecera en pantallas estrechas); `src/index.css` define los estilos mínimos de documento y raíz.
 
-Si la pregunta se refiere a GitHub Copilot, en VS Code se abre la vista de extensiones, se busca `GitHub Copilot`, se instala la extensión oficial y se inicia sesión con una cuenta de GitHub que tenga acceso a Copilot. Luego se puede abrir el archivo del proyecto y aceptar las sugerencias del editor.
+## 13. Pruebas (`src/test/`)
 
-Si se refiere a agregar código propio al proyecto, se crea o abre el archivo correspondiente, se escribe el código dentro del bloque adecuado y se conecta desde HTML con `script src`, desde CSS con `link rel="stylesheet"` o desde JavaScript con la función de inicialización correspondiente. No se debe pegar código sin comprobar que usa los mismos IDs y clases que el HTML.
+Las pruebas Vitest (`*.test.js`) verifican funciones de catálogo, carrito, almacenamiento y sesión. `npm test` las ejecuta.
 
-### ¿Cómo muevo un texto al centro?
+| Archivo | Qué comprueba |
+| --- | --- |
+| `add-cart-item.test.js` | Añadir un producto nuevo al carrito. |
+| `add-existing-cart-item.test.js` | Incrementar la cantidad cuando el producto ya está en el carrito. |
+| `get-cart-normalization.test.js` | Normalización y tratamiento de valores del carrito leídos desde almacenamiento. |
+| `get-catalog-products.test.js` | Construcción del catálogo a partir de productos base y datos guardados. |
+| `get-users.test.js` | Lectura y validación básica de usuarios persistidos. |
+| `read-storage-fallback.test.js` | Uso del valor alternativo cuando no hay un valor guardado. |
+| `read-storage-invalid-json.test.js` | Uso del valor alternativo cuando el contenido guardado no es JSON válido. |
+| `save-cart.test.js` | Persistencia del carrito y actualización del contador/evento relacionado. |
+| `session.test.js` | Lectura, guardado y notificación de cambios de sesión. |
+| `write-storage.test.js` | Serialización y escritura en `localStorage`. |
+| `testUtils.js` | Utilidades compartidas para preparar y aislar el almacenamiento en pruebas. |
+| `components/components.karma.jsx` | Diez casos Jasmine de componentes React mediante React Testing Library: cantidad, mensajes accesibles, timeline, etiquetas, filtros y callback de tarjeta. |
+| `karma-entry.jsx` | Entrada de Karma que carga la suite de componentes anterior. |
+| `PRUEBAS.md` | Explica cómo ejecutar y qué cubren las pruebas de componentes Karma/Jasmine. |
 
-Para centrar horizontalmente el texto se usa `text-align: center` en el selector del elemento:
+Las pruebas de componentes usan Karma + Jasmine + React Testing Library y se ejecutan por separado con `npm run test:karma`. `karma.conf.cjs` configura ChromeHeadless y Babel/Webpack para esta suite. La suite Vitest usa spies/mocks para las funciones y el almacenamiento; el reporte V8 descrito arriba se calcula solo al ejecutar Vitest.
 
-```css
-.titulo-seccion {
-	text-align: center;
-}
-```
+## 14. Imágenes (`src/img/` y `public/`)
 
-Si se quiere centrar un bloque completo, se puede usar un ancho y márgenes automáticos:
+Los archivos dentro de `src/img/` se importan desde el código, por lo que Vite puede incluirlos en la compilación. Las fotos de productos se utilizan en tarjetas, ofertas y detalle según el producto elegido; `hero-campo.png` sirve como imagen de la sección principal de inicio.
 
-```css
-.bloque {
-	max-width: 1100px;
-	margin-left: auto;
-	margin-right: auto;
-}
-```
+| Archivo | Uso |
+| --- | --- |
+| `espinaca.png` | Imagen del producto espinacas. |
+| `hero-campo.png` | Imagen del hero de inicio. |
+| `leche.jpg` | Imagen del producto leche. |
+| `manzanas-fuji.png` | Imagen del producto manzanas Fuji y fallback de imagen. |
+| `miel-organica.png` | Imagen del producto miel orgánica. |
+| `naranjas.jpg` | Imagen del producto naranjas. |
+| `pimentones.jpg` | Imagen del producto pimientos. |
+| `platanos.jpg` | Imagen del producto plátanos. |
+| `quinoa.jpg` | Imagen del producto quinua. |
+| `zanahorias.png` | Imagen del producto zanahorias. |
 
-Para centrar elementos en ambos ejes dentro de un contenedor se usa Flexbox:
+`public/favicon.svg` es el icono del sitio y se sirve desde la raíz como `/favicon.svg`.
 
-```css
-.contenedor {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-```
+## 15. Archivos de configuración y documentación del proyecto
 
-La propiedad se coloca en el elemento que controla la posición, no necesariamente en el texto que se desea mover.
+| Archivo | Para qué sirve |
+| --- | --- |
+| `package.json` | Nombre del proyecto, dependencias y comandos npm: Vite, Vitest, Karma/Jasmine, instrumentación de cobertura Istanbul y lint. |
+| `package-lock.json` | Versiones concretas del árbol de dependencias para instalaciones reproducibles. |
+| `vite.config.js` | Configuración de Vite y activación del plugin de React. |
+| `karma.conf.cjs` | Configuración CommonJS de Karma, Jasmine, Webpack/Babel, instrumentación Istanbul, reportes de cobertura y ChromeHeadless para las pruebas de componentes. |
+| `.oxlintrc.json` | Reglas/opciones de Oxlint. |
+| `.gitignore` | Rutas y archivos locales que Git debe ignorar, como `node_modules/` y `dist/`. |
+| `README.md` | Resumen del proyecto, rutas principales, comandos y credenciales locales de demostración. |
+| `docs/huerto-hogar/GUIA-CODIGO.md` | Esta guía de estructura, funcionamiento, ejecución y pruebas. |
+| `docs/huerto-hogar/rubrica.md` | Rúbrica de evaluación grupal e individual usada para organizar la sección de preparación de esta guía. |
+| `docs/huerto-hogar/evaluacion-iva.md` | Documento de evaluación relacionado con IVA. |
+| `docs/huerto-hogar/Especificacion_Requerimientos_HuertoHogar_IEEE830_V2 (1).docx` | Especificación de requerimientos del proyecto en formato Word. |
+| `docs/huerto-hogar/Planilla_Requerimientos_HuertoHogar.xlsx` | Planilla de requerimientos en formato Excel. |
 
-### ¿Cómo cambio el color de un botón?
+## 16. Carpeta `coverage/`
 
-Los botones comunes usan variables definidas en `css/variables.css` y aplicadas desde `css/buttons.css`. Para cambiar el color normal y el color al pasar el mouse:
+`coverage/` contiene archivos de salida para un reporte HTML de cobertura, no componentes ni recursos que se importen para ejecutar React. El reporte tiene una portada (`index.html`), hojas y scripts de presentación (`base.css`, `prettify.css`, `prettify.js`, `sorter.js`, `block-navigation.js`), iconos (`favicon.png`, `sort-arrow-sprite.png`) y páginas navegables bajo `img/`, `js/` y `test/` para los archivos que aparecen en ese reporte.
 
-```css
-:root {
-	--primary-green: #2B7A4B;
-	--primary-hover: #215E39;
-}
-```
+No edites manualmente esos archivos: se regeneran al producir un reporte. El comando de esta guía usa `coverage-v8/` para mantener separada la salida nueva de la carpeta `coverage/` existente.
 
-También se puede cambiar un botón específico mediante una clase propia:
+## 17. CUENTA DE PRUEBA ADMIN
 
-```css
-.btn-agregar {
-	background: #D97706;
-}
-
-.btn-agregar:hover {
-	background: #B45309;
-}
-```
-
-Es preferible modificar las variables cuando el cambio debe aplicarse a todo el sitio y usar una clase cuando solo debe cambiar un botón.
-
-### ¿Cómo cambio el color de una letra?
-
-Se usa la propiedad `color` en el selector del texto. Los colores generales del proyecto están en `css/variables.css`:
-
-```css
-.subtitulo {
-	color: #2F4F3A;
-}
-```
-
-Si el color se repite en varias páginas, se crea una variable, por ejemplo `--text-accent`, y se aplica con `color: var(--text-accent)`. Esto permite cambiarlo una sola vez y mantener consistencia visual.
-
-### ¿Cómo separo botones que están muy juntos?
-
-Si los botones están dentro de un contenedor Flexbox, se agrega `gap`, que crea separación uniforme sin agregar márgenes manuales a cada botón:
-
-```css
-.grupo-botones {
-	display: flex;
-	gap: 0.75rem;
-	flex-wrap: wrap;
-}
-```
-
-En el catálogo, `.producto-grid` ya usa `gap: 1.2rem` para separar las tarjetas. Si se necesita separar los botones dentro de una tarjeta, se crea un contenedor para ellos y se aplica la misma regla. `margin` sirve para una separación puntual, mientras que `gap` es más claro cuando se distribuyen varios elementos.
-
-## Preguntas adicionales para la presentación
-
-### ¿Qué ocurre si recargo la página o cierro el navegador?
-
-Los datos principales se guardan en `localStorage`, por lo que permanecen después de recargar o cerrar el navegador en el mismo dispositivo. El carrito usa `hh_carrito`, la sesión usa `sesion_activa`, los usuarios usan `usuarios_huerto` y los productos administrados usan `productos_huerto`. No es una base de datos real ni sincroniza información entre dispositivos.
-
-### ¿Por qué se usa `localStorage` y no variables normales?
-
-Una variable normal se pierde al recargar la página. `localStorage` permite conservar datos como el carrito, la sesión y los usuarios entre páginas. Como solo guarda texto, los objetos y arreglos se convierten con `JSON.stringify()` y se recuperan con `JSON.parse()`.
-
-### ¿Cómo se protege una página de administración?
-
-`js/administracion.js` revisa `sesion_activa` en `initAdminGuard()`. Si no existe una sesión o el valor de `rol` no es `admin`, muestra un mensaje y devuelve al usuario a `login.html`. Esta protección es del lado del cliente y sirve para la demostración; en una aplicación real también debe existir autorización en el servidor.
-
-### ¿Cómo se diferencia un cliente de un administrador?
-
-Cada usuario guardado tiene una propiedad `rol`, cuyo valor puede ser `cliente` o `admin`. Después del inicio de sesión, el código redirige al administrador a `admin-usuarios.html` y al cliente a `index.html`. Además, cuando el rol es `admin`, la navegación muestra solo Dashboard, Usuarios y Productos.
-
-### ¿Cómo funciona el botón Ver detalles?
-
-Cada tarjeta del catálogo tiene un `data-id`, por ejemplo `FR001`. `js/datos-productos.js` lee ese valor y navega a `detalle-producto.html?id=FR001`. En la página de detalle, `URLSearchParams` obtiene el ID y busca el producto correspondiente para rellenar nombre, precio, imagen, stock y descripción.
-
-### ¿Qué pasa si entro a `detalle-producto.html` sin un ID válido?
-
-La función `getProduct()` busca el ID recibido y, si no encuentra coincidencia, usa el primer producto como respaldo. Así la plantilla no queda vacía, aunque lo correcto es acceder desde una tarjeta válida del catálogo.
-
-### ¿Por qué algunos módulos se cargan antes que otros?
-
-El orden de los scripts es importante. Primero se carga `inicializacion.js`, que crea `window.HuertoHogar`; después se cargan los módulos de productos, carrito, formularios y administración; finalmente `app.js` espera a `DOMContentLoaded` y ejecuta las funciones disponibles. Si se cambia el orden, una función podría ejecutarse antes de que exista.
-
-### ¿Cómo se agrega una funcionalidad sin romper las otras páginas?
-
-Se crea una función de inicialización y se comprueba si el elemento existe antes de agregar listeners. Por ejemplo, `initRegisterForm()` termina si no encuentra `#form-registro`. Esto permite que `formularios.js` esté conectado en varias páginas sin intentar manipular elementos que pertenecen a otra.
-
-### ¿Cómo se actualiza un producto desde el panel admin?
-
-La tabla de `admin-productos.html` se construye desde `productos_huerto`. El botón Editar envía el ID en la URL a `admin-editar-producto.html?id=...`; el formulario carga ese producto, actualiza nombre, categoría, precio, stock o imagen y vuelve a guardar el arreglo en `localStorage`.
-
-### ¿Qué diferencia hay entre `id`, `class` y `data-*`?
-
-`id` identifica un elemento único, como `grid-productos`. `class` agrupa elementos que comparten estilos o comportamiento, como `.producto-card`. Los atributos `data-*` almacenan información propia de cada elemento, como `data-id`, `data-precio` y `data-img`, que JavaScript lee mediante `element.dataset`.
-
-### ¿Cómo se evita que un dato del usuario se interprete como HTML?
-
-Cuando se inserta texto controlado por el usuario, se debe usar `textContent` o la función `escaparHTML()` de `js/inicializacion.js`. Insertar directamente datos externos con `innerHTML` puede permitir que se interpreten etiquetas o scripts. En una aplicación real también se deben validar y escapar los datos en el servidor.
-
-### ¿Qué reviso si una página aparece sin estilos o sin funcionalidad?
-
-Primero se revisa que las rutas de `<link rel="stylesheet">` y `<script src="...">` existan. Después se confirma que los IDs y clases usados por JavaScript coincidan con los del HTML y se abre la consola del navegador para buscar errores. En este proyecto los nombres activos son `reset.css`, `inicializacion.js`, `carrito.js`, `formularios.js`, `datos-productos.js` y `administracion.js`.
-
-### ¿Qué diferencia hay entre un error de HTML, CSS y JavaScript?
-
-Un error de HTML suele ser una etiqueta mal cerrada o un ID incorrecto. Un error de CSS aparece cuando una regla está mal escrita o apunta a un selector que no existe. Un error de JavaScript ocurre cuando una función, variable o elemento no existe. Se revisa la consola del navegador y los diagnósticos de VS Code para localizar el archivo responsable.
-
-### ¿Cómo se comprueba que el formulario no se envíe con datos inválidos?
-
-El evento `submit` usa `event.preventDefault()` para detener el envío automático. Luego ejecuta las validaciones de nombre, correo, contraseña, confirmación y términos. Solo si todas devuelven `true` se guarda el usuario en `usuarios_huerto` y se redirige al login.
-
-### ¿Qué se puede mejorar en una versión real?
-
-Se debería usar un backend con base de datos, almacenar contraseñas cifradas, validar permisos en el servidor, conectar un medio de pago real, procesar el formulario de contacto y agregar pruebas automatizadas. El proyecto actual es una demostración frontend y por eso usa `localStorage` y datos simulados.
-
-## Convención de comentarios
-
-Los comentarios deben usar la sintaxis del lenguaje para no romper el proyecto:
-
-```html
-<!-- Explica una estructura HTML. -->
-```
-
-```css
-/* Explica una regla o declaración CSS. */
-```
-
-```javascript
-/* Explica una función o bloque JavaScript. */
-```
-
-La documentación está colocada encima de cada página, módulo, función y bloque visual importante. Las líneas vacías, llaves de cierre y valores obvios no necesitan una explicación repetida: se entienden por el comentario de la estructura que las contiene.
+Cuenta de prueba: admin@gmail.com / Admin123!

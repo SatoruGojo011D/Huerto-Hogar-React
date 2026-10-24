@@ -26,6 +26,9 @@ module.exports = function (config) {
                   ['@babel/preset-env', { targets: { browsers: 'last 2 Chrome versions' } }],
                   ['@babel/preset-react', { runtime: 'automatic' }],
                 ],
+                plugins: [
+                  ['istanbul', { exclude: ['**/src/test/**'] }],
+                ],
               },
             },
           },
@@ -35,7 +38,15 @@ module.exports = function (config) {
     webpackMiddleware: {
       stats: 'errors-only',
     },
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
+    coverageReporter: {
+      dir: 'coverage-karma',
+      subdir: 'html',
+      reporters: [
+        { type: 'text-summary' },
+        { type: 'html' },
+      ],
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
