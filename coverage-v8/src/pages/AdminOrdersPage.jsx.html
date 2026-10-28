@@ -1,0 +1,307 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for src/pages/AdminOrdersPage.jsx</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/pages</a> AdminOrdersPage.jsx</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/20</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/53</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/13</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/16</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useState } from 'react'
+import { formatPrice } from '../js/format.js'
+import { getOrders, getUsers, writeStorage } from '../js/storage.js'
+&nbsp;
+const orderStatuses = <span class="cstat-no" title="statement not covered" >['Confirmado', 'En preparación', 'En camino', 'Entregado']</span>
+&nbsp;
+function <span class="fstat-no" title="function not covered" >getCustomer(o</span>rder, users) {
+  const user = <span class="cstat-no" title="statement not covered" >users.<span class="fstat-no" title="function not covered" >find((e</span>ntry) =&gt; (</span>
+    (<span class="cstat-no" title="statement not covered" >order.userId != null &amp;&amp; String(entry.id) === String(order.userId))</span>
+    || (order.customerEmail &amp;&amp; entry.correo?.toLowerCase() === order.customerEmail.toLowerCase())
+  ))
+<span class="cstat-no" title="statement not covered" >  return user?.nombre || order.customerName || order.customerEmail || 'Compra sin cuenta asociada'</span>
+}
+&nbsp;
+export function <span class="fstat-no" title="function not covered" >AdminOrdersPage() {</span>
+  const [orders, setOrders] = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >useState(() =&gt; <span class="cstat-no" title="statement not covered" >g</span>etOrders())</span></span>
+  const [selectedOrder, setSelectedOrder] = <span class="cstat-no" title="statement not covered" >useState(null)</span>
+  const users = <span class="cstat-no" title="statement not covered" >getUsers()</span>
+&nbsp;
+  function <span class="fstat-no" title="function not covered" >updateStatus(o</span>rderCode, status) {
+    const next = <span class="cstat-no" title="statement not covered" >orders.<span class="fstat-no" title="function not covered" >map((o</span>rder) =&gt; <span class="cstat-no" title="statement not covered" >order.code === orderCode ? { ...order, status: Number(status) } : order)</span></span>
+<span class="cstat-no" title="statement not covered" >    writeStorage('hh_pedidos', next)</span>
+<span class="cstat-no" title="statement not covered" >    setOrders(next)</span>
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return (</span>
+    &lt;div className="admin-page-stack"&gt;
+      &lt;section className="summary-box"&gt;
+        &lt;div className="products-toolbar"&gt;
+          &lt;div&gt;&lt;h2 className="serif"&gt;Órdenes y boletas&lt;/h2&gt;&lt;p&gt;Consulta pedidos, actualiza su estado y revisa el comprobante de compra.&lt;/p&gt;&lt;/div&gt;
+          &lt;span className="badge rounded-pill text-bg-success"&gt;{orders.length} pedidos&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div className="admin-table-wrap"&gt;
+          &lt;table className="admin-products-table"&gt;
+            &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Pedido&lt;/th&gt;&lt;th&gt;Fecha&lt;/th&gt;&lt;th&gt;Cliente&lt;/th&gt;&lt;th&gt;Estado&lt;/th&gt;&lt;th&gt;Total&lt;/th&gt;&lt;th&gt;Boleta&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+            &lt;tbody&gt;
+              {orders.length ? orders.<span class="fstat-no" title="function not covered" >map((o</span>rder, index) =&gt; (
+<span class="cstat-no" title="statement not covered" >                &lt;tr key={order.code || index}&gt;</span>
+                  &lt;td className="product-name"&gt;{order.code || 'Sin código'}&lt;/td&gt;
+                  &lt;td&gt;{order.createdAt ? new Date(order.createdAt).toLocaleDateString('es-CL') : 'Sin fecha'}&lt;/td&gt;
+                  &lt;td&gt;{getCustomer(order, users)}&lt;/td&gt;
+                  &lt;td&gt;&lt;select aria-label={`Estado de ${order.code || 'pedido'}`} value={Number(order.status) || 1} <span class="fstat-no" title="function not covered" >onChange={(e</span>vent) =&gt; <span class="cstat-no" title="statement not covered" >updateStatus(order.code, event.target.value)}&gt;{o</span>rderStatuses.<span class="fstat-no" title="function not covered" >map((s</span>tatus, statusIndex) =&gt; <span class="cstat-no" title="statement not covered" >&lt;option key={status} value={statusIndex + 1}&gt;{status}&lt;/option&gt;)</span>}&lt;/select&gt;&lt;/td&gt;
+                  &lt;td&gt;{formatPrice(order.total)}&lt;/td&gt;
+                  &lt;td&gt;&lt;button className="btn btn-secondary" type="button" <span class="fstat-no" title="function not covered" >onClick={() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etSelectedOrder(order)}&gt;V</span>er boleta&lt;/button&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+              )) : &lt;tr&gt;&lt;td colSpan="6" className="table-empty"&gt;Todavía no hay órdenes registradas.&lt;/td&gt;&lt;/tr&gt;}
+            &lt;/tbody&gt;
+          &lt;/table&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      {selectedOrder &amp;&amp; (
+        &lt;section className="card receipt-admin" aria-labelledby="admin-receipt-title"&gt;
+          &lt;div className="card-header"&gt;&lt;h2 id="admin-receipt-title"&gt;Boleta {selectedOrder.code || ''}&lt;/h2&gt;&lt;/div&gt;
+          &lt;div className="card-body"&gt;
+            &lt;dl className="receipt-admin-meta"&gt;
+              &lt;dt&gt;Cliente&lt;/dt&gt;&lt;dd&gt;{getCustomer(selectedOrder, users)}&lt;/dd&gt;
+              &lt;dt&gt;Fecha del pedido&lt;/dt&gt;&lt;dd&gt;{selectedOrder.createdAt ? new Date(selectedOrder.createdAt).toLocaleString('es-CL') : 'Sin fecha registrada'}&lt;/dd&gt;
+              &lt;dt&gt;Entrega&lt;/dt&gt;&lt;dd&gt;{selectedOrder.delivery || 'Fecha por confirmar'}&lt;/dd&gt;
+              &lt;dt&gt;Estado&lt;/dt&gt;&lt;dd&gt;{orderStatuses[(Number(selectedOrder.status) || 1) - 1] || 'Confirmado'}&lt;/dd&gt;
+            &lt;/dl&gt;
+            &lt;div className="admin-table-wrap"&gt;
+              &lt;table className="admin-products-table"&gt;
+                &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Producto&lt;/th&gt;&lt;th&gt;Cantidad&lt;/th&gt;&lt;th&gt;Precio unitario&lt;/th&gt;&lt;th&gt;Subtotal&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+                &lt;tbody&gt;{(selectedOrder.items || []).<span class="fstat-no" title="function not covered" >map((i</span>tem, index) =&gt; <span class="cstat-no" title="statement not covered" >&lt;tr key={`${item.id || item.nombre}-${index}`}&gt;&lt;td&gt;{item.nombre || item.name || 'Producto'}&lt;/td&gt;&lt;td&gt;{Number(item.qty) || 0}&lt;/td&gt;&lt;td&gt;{formatPrice(item.precio ?? item.price)}&lt;/td&gt;&lt;td&gt;{formatPrice((Number(item.precio ?? item.price) || 0) * (Number(item.qty) || 0))}&lt;/td&gt;&lt;/tr&gt;)</span>}&lt;/tbody&gt;
+                &lt;tfoot&gt;&lt;tr&gt;&lt;th colSpan="3"&gt;Neto&lt;/th&gt;&lt;td&gt;{formatPrice(selectedOrder.subtotal)}&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th colSpan="3"&gt;IVA (19 %)&lt;/th&gt;&lt;td&gt;{formatPrice(selectedOrder.iva ?? 0)}&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th colSpan="3"&gt;Despacho&lt;/th&gt;&lt;td&gt;{formatPrice(selectedOrder.shipping)}&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th colSpan="3"&gt;Total&lt;/th&gt;&lt;td&gt;&lt;strong&gt;{formatPrice(selectedOrder.total)}&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+              &lt;/table&gt;
+            &lt;/div&gt;
+            &lt;div className="form-actions mt-3"&gt;&lt;button className="btn btn-primary" type="button" <span class="fstat-no" title="function not covered" >onClick={() =&gt; <span class="cstat-no" title="statement not covered" >w</span>indow.print()}&gt;I</span>mprimir boleta&lt;/button&gt;&lt;button className="btn btn-secondary" type="button" <span class="fstat-no" title="function not covered" >onClick={() =&gt; <span class="cstat-no" title="statement not covered" >s</span>etSelectedOrder(null)}&gt;C</span>errar&lt;/button&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/section&gt;
+      )}
+    &lt;/div&gt;
+  )
+}
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-10-28T22:38:31.526Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    

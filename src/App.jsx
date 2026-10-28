@@ -15,9 +15,9 @@ import './styles/nosotros.css'
 import './styles/blog.css'
 import './styles/admin.css'
 import './App.css'
-import SiteHeader from './components/SiteHeader.jsx'
-import SiteFooter from './components/SiteFooter.jsx'
-import AdminShell from './components/AdminShell.jsx'
+import CabeceraSitio from './components/CabeceraSitio.jsx'
+import PieSitio from './components/PieSitio.jsx'
+import PanelAdmin from './components/PanelAdmin.jsx'
 import { ensureSeedUsers, getSession } from './js/storage.js'
 import { HomePage } from './pages/HomePage.jsx'
 import { CatalogPage } from './pages/CatalogPage.jsx'
@@ -41,6 +41,9 @@ import { AdminUsersPage } from './pages/AdminUsersPage.jsx'
 import { AdminUserFormPage } from './pages/AdminUserFormPage.jsx'
 import { AdminUserHistoryPage } from './pages/AdminUserHistoryPage.jsx'
 import { AdminReportsPage } from './pages/AdminReportsPage.jsx'
+import { CategoriesPage } from './pages/CategoriesPage.jsx'
+import { CheckoutPage } from './pages/CheckoutPage.jsx'
+import { PurchaseResultPage } from './pages/PurchaseResultPage.jsx'
 import { Pag1Bootstrap } from './pages/Pag1Bootstrap.jsx'
 import { Pag2Bootstrap } from './pages/Pag2Bootstrap.jsx'
 import { Pag3Bootstrap } from './pages/Pag3Bootstrap.jsx'
@@ -48,9 +51,13 @@ import { Pag3Bootstrap } from './pages/Pag3Bootstrap.jsx'
 const publicRoutes = {
   '/': { title: 'HuertoHogar | Frescura del Campo a tu Mesa', active: '/', Page: HomePage },
   '/catalogo': { title: 'HuertoHogar | Catálogo de Productos', active: '/catalogo', Page: CatalogPage },
+  '/categorias': { title: 'HuertoHogar | Categorías', active: '/categorias', Page: CategoriesPage },
   '/ofertas': { title: 'HuertoHogar | Ofertas', active: '/ofertas', Page: OffersPage },
   '/producto': { title: 'HuertoHogar | Detalle de Producto', active: '/catalogo', Page: ProductDetailPage },
   '/carrito': { title: 'HuertoHogar | Mi carrito', active: '', Page: CartPage },
+  '/checkout': { title: 'HuertoHogar | Pago', active: '', Page: CheckoutPage },
+  '/compra/exitosa': { title: 'HuertoHogar | Compra exitosa', active: '', Page: () => <PurchaseResultPage success /> },
+  '/compra/error': { title: 'HuertoHogar | Error en el pago', active: '', Page: () => <PurchaseResultPage success={false} /> },
   '/nosotros': { title: 'HuertoHogar | Nosotros', active: '/nosotros', Page: AboutPage },
   '/blog': { title: 'HuertoHogar | Blog', active: '/blog', Page: BlogPage },
   '/contacto': { title: 'HuertoHogar | Contacto', active: '/contacto', Page: ContactPage },
@@ -85,7 +92,7 @@ function ProtectedAdmin({ title, Page }) {
     if (!authorized) window.location.replace('/cuenta')
   }, [authorized])
   if (!authorized) return null
-  return <AdminShell title={title}><Page /></AdminShell>
+  return <PanelAdmin title={title}><Page /></PanelAdmin>
 }
 
 function NotFoundPage() {
@@ -107,9 +114,9 @@ function App() {
     const [, title, Page] = adminRoute
     return <ProtectedAdmin title={title} Page={Page} />
   }
-  if (!route) return <><SiteHeader /><NotFoundPage /><SiteFooter /></>
+  if (!route) return <><CabeceraSitio /><NotFoundPage /><PieSitio /></>
   const { Page, active } = route
-  return <><SiteHeader active={active} /><Page /><SiteFooter /></>
+  return <><CabeceraSitio active={active} /><Page /><PieSitio /></>
 }
 
 export default App

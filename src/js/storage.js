@@ -1,4 +1,5 @@
 import { getDiscountedPrice, normalizeDiscount, products, resolveProductImage } from './products.js'
+import { formatStock } from './format.js'
 
 export function readStorage(key, fallback) {
   try {
@@ -42,6 +43,11 @@ export function getSession() {
 
 export function setSession(user) {
   writeStorage('sesion_activa', user)
+  window.dispatchEvent(new Event('hh:session-change'))
+}
+
+export function clearSession() {
+  localStorage.removeItem('sesion_activa')
   window.dispatchEvent(new Event('hh:session-change'))
 }
 
@@ -107,7 +113,7 @@ export function getCatalogProducts() {
         category: normalizeCategory(saved.categoria || product.categoryLabel),
         categoryLabel: saved.categoria || product.categoryLabel,
         price,
-        stock: String(saved.stock ?? product.stock),
+        stock: formatStock(saved.stock ?? product.stock),
         imagePath: saved.imagen || product.imagePath,
         image: resolveProductImage(saved.imagen || product.imagePath),
       } : {}),
@@ -128,7 +134,7 @@ export function getCatalogProducts() {
       discountPercent,
       discountedPrice: getDiscountedPrice(price, discountPercent),
       unit: 'unidad',
-      stock: String(product.stock ?? 'Sin stock informado'),
+      stock: formatStock(product.stock ?? 'Sin stock informado'),
       origin: 'HuertoHogar',
       imagePath: product.imagen,
       image: resolveProductImage(product.imagen),
@@ -155,4 +161,7 @@ export function getItemCount() {
     const quantity = Number(item.qty)
     return sum + (Number.isFinite(quantity) ? Math.max(0, quantity) : 0)
   }, 0)
+}
+export function getCartTotal() {
+  return getCart().reduce((sum, item) => sum + item.precio * item.qty, 0)
 }

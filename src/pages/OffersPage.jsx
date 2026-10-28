@@ -1,4 +1,4 @@
-import ProductCard from '../components/ProductCard.jsx'
+import TarjetaProducto from '../components/TarjetaProducto.jsx'
 import { addCartItem, getCatalogProducts } from '../js/storage.js'
 
 export function OffersPage() {
@@ -20,7 +20,7 @@ export function OffersPage() {
         )}
         {products.map((product) => (
           <div className="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex" key={product.id}>
-            <ProductCard product={product} onAdd={addCartItem} />
+            <TarjetaProducto product={product} onAdd={addCartItem} />
           </div>
         ))}
       </section>

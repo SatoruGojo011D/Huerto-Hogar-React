@@ -1,0 +1,6 @@
+[
+  { "ciudad": "Santiago", "direccion": "Av. Providencia 1208, Providencia, Santiago, Chile" },
+  { "ciudad": "Puerto Montt", "direccion": "Av. Diego Portales 1000, Puerto Montt, Chile" },
+  { "ciudad": "Villarrica", "direccion": "Camino Villarrica-Pucón 1500, Villarrica, Chile" },
+  { "ciudad": "Viña del Mar", "direccion": "Av. San Martín 2100, Viña del Mar, Chile" }
+]

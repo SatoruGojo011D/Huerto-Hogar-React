@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { getOrders, readStorage, writeStorage } from '../js/storage.js'
-import FormField from '../components/FormField.jsx'
-import StatusMessage from '../components/StatusMessage.jsx'
-import StatusTimeline from '../components/StatusTimeline.jsx'
+import CampoFormulario from '../components/CampoFormulario.jsx'
+import MensajeEstado from '../components/MensajeEstado.jsx'
+import LineaTiempoEstado from '../components/LineaTiempoEstado.jsx'
 import { getMinimumDeliveryDate } from '../js/delivery.js'
 
 export function TrackingPage() {
@@ -43,5 +43,5 @@ export function TrackingPage() {
     setDateMessage(`Fecha de entrega guardada: ${date}`)
   }
 
-  return <main className="container tracking-main"><h2 className="cart-title serif">Seguimiento de pedidos</h2><p className="cart-subtitle">Programa tu entrega y revisa el estado de tu pedido.</p><div className="summary-box"><section className="bloque-seguimiento"><h3 className="serif">Programar entrega</h3><p>Selecciona tu fecha preferida para próximos pedidos.</p><form onSubmit={saveDate} className="fila-inline"><FormField id="tracking-date" label="Fecha de entrega"><input id="tracking-date" type="date" min={getMinimumDeliveryDate()} value={date} onChange={(event) => setDate(event.target.value)} /></FormField><button className="btn-checkout" type="submit">Guardar fecha</button></form><StatusMessage variant="success">{dateMessage}</StatusMessage></section><section className="bloque-seguimiento"><h3 className="serif">Rastreo de pedido</h3><p>Ingresa tu número de pedido para consultar su estado.</p><form onSubmit={track} className="fila-inline"><FormField id="tracking-code" label="Número de pedido" help="Prueba HH-10234, HH-55321, HH-98765 o HH-40001."><input id="tracking-code" value={code} onChange={(event) => setCode(event.target.value)} placeholder="Ej: HH-98765" /></FormField><button className="btn-checkout" type="submit">Rastrear</button></form><StatusMessage>{error}</StatusMessage><StatusTimeline status={status} /></section></div></main>
+  return <main className="container tracking-main"><h2 className="cart-title serif">Seguimiento de pedidos</h2><p className="cart-subtitle">Programa tu entrega y revisa el estado de tu pedido.</p><div className="summary-box"><section className="bloque-seguimiento"><h3 className="serif">Programar entrega</h3><p>Selecciona tu fecha preferida para próximos pedidos.</p><form onSubmit={saveDate} className="fila-inline"><CampoFormulario id="tracking-date" label="Fecha de entrega"><input id="tracking-date" type="date" min={getMinimumDeliveryDate()} value={date} onChange={(event) => setDate(event.target.value)} /></CampoFormulario><button className="btn-checkout" type="submit">Guardar fecha</button></form><MensajeEstado variant="success">{dateMessage}</MensajeEstado></section><section className="bloque-seguimiento"><h3 className="serif">Rastreo de pedido</h3><p>Ingresa tu número de pedido para consultar su estado.</p><form onSubmit={track} className="fila-inline"><CampoFormulario id="tracking-code" label="Número de pedido" help="Prueba HH-10234, HH-55321, HH-98765 o HH-40001."><input id="tracking-code" value={code} onChange={(event) => setCode(event.target.value)} placeholder="Ej: HH-98765" /></CampoFormulario><button className="btn-checkout" type="submit">Rastrear</button></form><MensajeEstado>{error}</MensajeEstado><LineaTiempoEstado status={status} /></section></div></main>
 }

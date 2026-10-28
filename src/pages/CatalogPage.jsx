@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { addCartItem, getCatalogProducts } from '../js/storage.js'
-import CatalogFilters from '../components/CatalogFilters.jsx'
-import ProductCard from '../components/ProductCard.jsx'
+import FiltrosCatalogo from '../components/FiltrosCatalogo.jsx'
+import TarjetaProducto from '../components/TarjetaProducto.jsx'
 
 export function CatalogPage() {
   const [categories, setCategories] = useState([])
@@ -26,11 +26,11 @@ export function CatalogPage() {
         <span className="badge rounded-pill text-bg-success align-self-start align-self-md-end">{filteredProducts.length} productos</span>
       </div>
       <div className="row g-4 align-items-start">
-        <div className="col-12 col-lg-3"><CatalogFilters categories={categories} setCategories={setCategories} prices={prices} setPrices={setPrices} search={search} setSearch={setSearch} /></div>
+        <div className="col-12 col-lg-3"><FiltrosCatalogo categories={categories} setCategories={setCategories} prices={prices} setPrices={setPrices} search={search} setSearch={setSearch} /></div>
         <section className="col-12 col-lg-9" aria-label="Resultados del catálogo">
           <div className="row g-3 catalog-results">
             {filteredProducts.length === 0 && <p className="sin-resultados col-12">No encontramos productos con esos filtros.</p>}
-            {filteredProducts.map((product) => <div className="col-12 col-sm-6 col-xl-4 d-flex" key={product.id}><ProductCard product={product} onAdd={addCartItem} /></div>)}
+            {filteredProducts.map((product) => <div className="col-12 col-sm-6 col-xl-4 d-flex" key={product.id}><TarjetaProducto product={product} onAdd={addCartItem} /></div>)}
           </div>
         </section>
       </div>

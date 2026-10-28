@@ -62,7 +62,7 @@ export function AdminOrdersPage() {
               <table className="admin-products-table">
                 <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio unitario</th><th>Subtotal</th></tr></thead>
                 <tbody>{(selectedOrder.items || []).map((item, index) => <tr key={`${item.id || item.nombre}-${index}`}><td>{item.nombre || item.name || 'Producto'}</td><td>{Number(item.qty) || 0}</td><td>{formatPrice(item.precio ?? item.price)}</td><td>{formatPrice((Number(item.precio ?? item.price) || 0) * (Number(item.qty) || 0))}</td></tr>)}</tbody>
-                <tfoot><tr><th colSpan="3">Subtotal</th><td>{formatPrice(selectedOrder.subtotal)}</td></tr><tr><th colSpan="3">Despacho</th><td>{formatPrice(selectedOrder.shipping)}</td></tr><tr><th colSpan="3">Total</th><td><strong>{formatPrice(selectedOrder.total)}</strong></td></tr></tfoot>
+                <tfoot><tr><th colSpan="3">Neto</th><td>{formatPrice(selectedOrder.subtotal)}</td></tr><tr><th colSpan="3">IVA (19 %)</th><td>{formatPrice(selectedOrder.iva ?? 0)}</td></tr><tr><th colSpan="3">Despacho</th><td>{formatPrice(selectedOrder.shipping)}</td></tr><tr><th colSpan="3">Total</th><td><strong>{formatPrice(selectedOrder.total)}</strong></td></tr></tfoot>
               </table>
             </div>
             <div className="form-actions mt-3"><button className="btn btn-primary" type="button" onClick={() => window.print()}>Imprimir boleta</button><button className="btn btn-secondary" type="button" onClick={() => setSelectedOrder(null)}>Cerrar</button></div>

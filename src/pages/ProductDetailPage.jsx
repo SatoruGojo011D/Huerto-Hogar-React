@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { products } from '../js/products.js'
 import { addCartItem, getCatalogProducts, getSession, readStorage, writeStorage } from '../js/storage.js'
 import { formatPrice } from '../js/format.js'
-import QuantityControl from '../components/QuantityControl.jsx'
-import useTransientFeedback from '../js/useTransientFeedback.js'
+import ControlCantidad from '../components/ControlCantidad.jsx'
+import useTransientFeedback from '../hooks/useTransientFeedback.js'
 
 export function ProductDetailPage() {
   const id = new URLSearchParams(window.location.search).get('id')
@@ -54,7 +54,7 @@ export function ProductDetailPage() {
           <p className="stock-detalle">Stock disponible: {displayProduct.stock}</p><p>{displayProduct.description}</p>
           <div className="origen-detalle"><strong>Origen:</strong> {displayProduct.origin}<br /><strong>Prácticas sostenibles:</strong> {displayProduct.practices}</div>
           <div className="huella-carbono"><strong>🌿 Impacto ambiental</strong><p>{displayProduct.impact}</p></div>
-          <div className="form-compra"><div className="form-group cantidad-detalle"><label>Cantidad</label><QuantityControl value={quantity} onChange={setQuantity} /></div><button className="btn-comprar" type="button" onClick={addDetailToCart}>{addedToCart ? '✓ Añadido' : 'Añadir al Carrito'}</button></div>
+          <div className="form-compra"><div className="form-group cantidad-detalle"><label>Cantidad</label><ControlCantidad value={quantity} onChange={setQuantity} /></div><button className="btn-comprar" type="button" onClick={addDetailToCart}>{addedToCart ? '✓ Añadido' : 'Añadir al Carrito'}</button></div>
           <hr className="detalle-divider" />
           <section className="resenas-detalle">
             <h3>Reseñas y calificaciones</h3>

@@ -1,5 +1,5 @@
 import { addCartItem, getCatalogProducts } from '../js/storage.js'
-import ProductCard from '../components/ProductCard.jsx'
+import TarjetaProducto from '../components/TarjetaProducto.jsx'
 
 export function HomePage() {
   const featured = getCatalogProducts().slice(0, 4)
@@ -19,7 +19,7 @@ export function HomePage() {
       <section className="container home-section">
         <div className="section-heading"><span className="section-kicker">Lo más elegido</span><h2 className="serif">Productos destacados</h2></div>
         <div className="row g-4">
-          {featured.map((product) => <div className="col-12 col-sm-6 col-lg-3" key={product.id}><ProductCard product={product} featured onAdd={addCartItem} /></div>)}
+          {featured.map((product) => <div className="col-12 col-sm-6 col-lg-3" key={product.id}><TarjetaProducto product={product} featured onAdd={addCartItem} /></div>)}
         </div>
       </section>
     </main>

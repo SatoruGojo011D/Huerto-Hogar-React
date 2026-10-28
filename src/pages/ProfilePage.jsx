@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { getSession, getUsers, setSession, writeStorage } from '../js/storage.js'
+import { clearSession, getSession, getUsers, setSession, writeStorage } from '../js/storage.js'
 import { emailPattern } from '../js/validation.js'
-import FormField from '../components/FormField.jsx'
+import CampoFormulario from '../components/CampoFormulario.jsx'
 
 export function ProfilePage({ adminMode = false }) {
   const session = getSession()
@@ -62,9 +62,9 @@ export function ProfilePage({ adminMode = false }) {
   }
 
   function logout() {
-    localStorage.removeItem('sesion_activa')
+    clearSession()
     window.location.href = '/'
   }
 
-  return <Container className="container account-main profile-main"><h2 className="cart-title serif">Mi perfil</h2><p className="cart-subtitle">Actualiza tu información personal y credenciales de acceso.</p><form className="summary-box account-form profile-form" onSubmit={submit}><p className={`profile-alert ${success ? 'success' : 'error'}`} aria-live="polite">{message}</p><FormField id="profile-name" label="Nombre completo" name="name" defaultValue={session.nombre} required /><FormField id="profile-email" label="Correo electrónico" name="email" type="email" defaultValue={session.correo} required /><FormField id="profile-phone" label="Teléfono" name="phone" type="tel" defaultValue={session.telefono || ''} /><FormField id="profile-address" label="Dirección" name="address" defaultValue={session.direccion || ''} /><hr /><h3 className="serif">Cambiar contraseña</h3><FormField id="profile-current-password" label="Contraseña actual" name="currentPassword" type="password" autoComplete="current-password" /><FormField id="profile-new-password" label="Nueva contraseña" name="newPassword" type="password" autoComplete="new-password" help="Mínimo 8 caracteres, con letras y números." /><div className="profile-actions"><button className="btn-checkout" type="submit">Guardar cambios</button><button className="btn-checkout btn-logout" type="button" onClick={logout}>Cerrar sesión</button></div></form></Container>
+  return <Container className="container account-main profile-main"><h2 className="cart-title serif">Mi perfil</h2><p className="cart-subtitle">Actualiza tu información personal y credenciales de acceso.</p><form className="summary-box account-form profile-form" onSubmit={submit}><p className={`profile-alert ${success ? 'success' : 'error'}`} aria-live="polite">{message}</p><CampoFormulario id="profile-name" label="Nombre completo" name="name" defaultValue={session.nombre} required /><CampoFormulario id="profile-email" label="Correo electrónico" name="email" type="email" defaultValue={session.correo} required /><CampoFormulario id="profile-phone" label="Teléfono" name="phone" type="tel" defaultValue={session.telefono || ''} /><CampoFormulario id="profile-address" label="Dirección" name="address" defaultValue={session.direccion || ''} /><hr /><h3 className="serif">Cambiar contraseña</h3><CampoFormulario id="profile-current-password" label="Contraseña actual" name="currentPassword" type="password" autoComplete="current-password" /><CampoFormulario id="profile-new-password" label="Nueva contraseña" name="newPassword" type="password" autoComplete="new-password" help="Mínimo 8 caracteres, con letras y números." /><div className="profile-actions"><button className="btn-checkout" type="submit">Guardar cambios</button><button className="btn-checkout btn-logout" type="button" onClick={logout}>Cerrar sesión</button></div></form></Container>
 }

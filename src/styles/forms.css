@@ -148,3 +148,4 @@
 #form-login .login-submit {
     margin-top: 0.5rem;
 }
+.form-error { display: block; margin-top: 0.3rem; color: #c0392b; font-size: 0.82rem; font-weight: 600; }

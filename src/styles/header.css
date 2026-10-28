@@ -150,3 +150,4 @@ nav ul li a:hover, nav ul li a.active {
         right: -2rem;
     }
 }
+.cart-total { margin-left: 1rem; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); white-space: nowrap; }

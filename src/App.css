@@ -326,10 +326,4 @@ main#detalle-producto .info-producto {
     font-size: 0.68rem;
     overflow-wrap: anywhere;
   }
-
-  .receipt-modal {
-    max-height: calc(100svh - 2rem);
-    overflow-y: auto;
-    padding: 1.5rem;
-  }
 }

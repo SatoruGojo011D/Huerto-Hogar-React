@@ -35,10 +35,13 @@ npm run build     # genera la versión de producción en dist/
 npm run preview   # sirve localmente la última compilación
 npm run lint      # revisa el código con oxlint
 npm test          # ejecuta Vitest
-npm run test:karma # ejecuta las pruebas de componentes con ChromeHeadless
+npm test              # Vitest en modo observador
+npm run test:run      # una sola ejecución
+npm run test:informe  # informe de pruebas en la terminal
+npm run test:coverage # cobertura V8 (terminal + HTML)
 ```
 
-`npm run preview` se ejecuta después de `npm run build`. Para `npm run test:karma` se necesita Google Chrome instalado.
+`npm run preview` se ejecuta después de `npm run build`.
 
 **Windows PowerShell:** si aparece un error indicando que la ejecución de `npm.ps1` está deshabilitada, usa `npm.cmd` en lugar de `npm` (por ejemplo, `npm.cmd run dev` o `npm.cmd test`). No hace falta cambiar la política de ejecución de PowerShell.
 
@@ -52,15 +55,9 @@ npm test -- --coverage.enabled --coverage.provider=v8 --coverage.reportsDirector
 
 Al terminar, abre `coverage-v8/index.html` para consultar el reporte navegable. También se muestra un resumen en la terminal. Si se omite `--coverage.reportsDirectory=coverage-v8`, Vitest usa `coverage/` como carpeta predeterminada; en este repositorio ya hay archivos de reporte allí, por eso se recomienda la carpeta separada.
 
-La suite de componentes también genera cobertura al ejecutar Karma:
+Todas las pruebas corren en Vitest, siguiendo la guía de testing del curso (`npm run test:coverage` escribe el reporte en `coverage-v8/`).
 
-```bash
-npm run test:karma
-```
-
-El reporte navegable queda en `coverage-karma/html/index.html` y el resumen aparece en la terminal. Karma instrumenta con Istanbul el código de aplicación que carga la suite, no todos los archivos de la aplicación.
-
-La cobertura indica qué partes del código alcanzan las pruebas ejecutadas: no significa que toda la aplicación tenga cobertura completa. En la ejecución revisada para esta guía, Vitest pasó **14/14 pruebas en 10 archivos** y V8 registró **77,45 % de sentencias, 72,97 % de ramas, 78,37 % de funciones y 79,26 % de líneas** en los módulos de lógica alcanzados. Karma/Jasmine pasó **10/10 pruebas** y el reporte Istanbul registró **85,41 % de sentencias, 73,21 % de ramas, 76,92 % de funciones y 90,47 % de líneas** en los módulos cargados por las pruebas de componentes. Son dos mediciones separadas y parciales; no se deben sumar ni presentar como cobertura de toda la aplicación.
+La cobertura indica qué partes del código alcanzan las pruebas ejecutadas. En la última ejecución, Vitest pasó **10/10 pruebas en 10 archivos** y V8 registró **23 % de sentencias, 17,8 % de ramas, 26,19 % de funciones y 24,3 % de líneas sobre todo `src/`**: el total es bajo porque se priorizaron los flujos críticos y hay muchas páginas sin pruebas.
 
 ## 4. Entrada de la aplicación y estilos globales
 
@@ -74,8 +71,8 @@ La cobertura indica qué partes del código alcanzan las pruebas ejecutadas: no 
 
 ### Composición y protección de rutas
 
-- En páginas públicas, `App.jsx` dibuja `SiteHeader`, la página seleccionada y `SiteFooter`.
-- En rutas que empiezan por `/admin`, `ProtectedAdmin` comprueba que la sesión tenga el rol `admin`; si no, redirige a `/cuenta`. Las páginas administrativas se muestran dentro de `AdminShell`.
+- En páginas públicas, `App.jsx` dibuja `CabeceraSitio`, la página seleccionada y `PieSitio`.
+- En rutas que empiezan por `/admin`, `ProtectedAdmin` comprueba que la sesión tenga el rol `admin`; si no, redirige a `/cuenta`. Las páginas administrativas se muestran dentro de `PanelAdmin`.
 - Si la ruta no existe, se muestra la vista 404 entre la cabecera y el pie.
 - `App.jsx` también establece el título del documento y llama a `ensureSeedUsers()` para preparar las cuentas de demostración.
 
@@ -111,24 +108,97 @@ Cada archivo de esta tabla está dentro de `src/pages/`. La ruta se define en `s
 | `Pag2Bootstrap.jsx` | `/bootstrap/productos` | Página de demostración de productos con React Bootstrap. |
 | `Pag3Bootstrap.jsx` | `/bootstrap/ayuda` | Página de demostración de contenido de ayuda con React Bootstrap. |
 
-Las rutas administrativas comparten la estructura visual de `AdminShell`; las dos rutas de formulario reutilizan el mismo componente con una propiedad `edit` para distinguir creación y edición.
+Las rutas administrativas comparten la estructura visual de `PanelAdmin`; las dos rutas de formulario reutilizan el mismo componente con una propiedad `edit` para distinguir creación y edición.
 
-## 6. Componentes reutilizables y lugar donde aparecen
+## 6. Componentes reutilizables: qué hace cada uno, sus parámetros y dónde se usa
 
-Todos están en `src/components/`. Se encargan de una pieza de interfaz o interacción para que las páginas no repitan su implementación.
+Todos están en `src/components/`. Cada componente resuelve una pieza de interfaz para que las páginas no repitan su implementación. En React, los **parámetros** de un componente se llaman **props** (propiedades): son los datos o funciones que el componente padre le entrega al hijo, por ejemplo `<ControlCantidad value={2} onChange={...} />`.
 
-| Archivo | Función y ubicación |
-| --- | --- |
-| `SiteHeader.jsx` | Cabecera global de las páginas públicas: marca, navegación, sesión, acceso al panel cuando corresponde y carrito con contador. Escucha cambios de sesión y carrito para actualizarse. |
-| `SiteFooter.jsx` | Pie de página compartido al final de las vistas públicas y de la página 404. |
-| `AdminShell.jsx` | Estructura común de administración: barra lateral, navegación del panel, título y espacio de contenido. Envuelve las páginas administrativas autorizadas. |
-| `ProductCard.jsx` | Tarjeta de producto con imagen, nombre, precio/descuento, stock cuando aplica y acción de añadir. Se muestra en los productos destacados del inicio y en los resultados de catálogo y ofertas. Delega la compra a `onAdd`. |
-| `CatalogFilters.jsx` | Controles de búsqueda y filtros de categoría/precio en la columna de filtros de `/catalogo`; recibe y actualiza el estado desde `CatalogPage`. |
-| `FormField.jsx` | Presentación reutilizable de etiqueta, control y ayuda en formularios de contacto, acceso, registro, perfil y seguimiento. |
-| `QuantityControl.jsx` | Selector de cantidad con límites y botones para incrementar/decrementar; se muestra en `/carrito` y en el detalle de producto. |
-| `OrderReceiptModal.jsx` | Diálogo del comprobante que aparece al finalizar una compra en `/carrito`, con resumen del pedido y acción de cierre. |
-| `StatusMessage.jsx` | Mensaje accesible de estado (por ejemplo, error o éxito), anunciado con `aria-live`. Se usa en formularios y acciones. |
-| `StatusTimeline.jsx` | Secuencia visual de estados del pedido: confirmado, preparación, camino y entregado. Se muestra en `/seguimiento`. |
+### 6.1 Resumen: ¿cuáles componentes reciben parámetros?
+
+| Componente | ¿Recibe props? | Props | Dónde se le pasan |
+| --- | --- | --- | --- |
+| `CabeceraSitio` | Sí | `active` | `src/App.jsx` (líneas 117-119) |
+| `LogoMarca` | Sí | `href`, `size` | `CabeceraSitio.jsx` (sin props, usa los valores por defecto) y `PieSitio.jsx` (`size={20}`) |
+| `PieSitio` | **No** | — | Se usa en `src/App.jsx` (líneas 117-119) sin parámetros |
+| `PanelAdmin` | Sí | `title`, `children` | `src/App.jsx` (línea 95) |
+| `TarjetaProducto` | Sí | `product`, `featured`, `onAdd` | `HomePage.jsx`, `CatalogPage.jsx`, `CategoriesPage.jsx`, `OffersPage.jsx` |
+| `FiltrosCatalogo` | Sí | `categories`, `setCategories`, `prices`, `setPrices`, `search`, `setSearch` | `CatalogPage.jsx` (línea 29) |
+| `CampoFormulario` | Sí | `id`, `label`, `children`, `help`, `error`, `className` y cualquier atributo de `<input>` | `LoginPage`, `RegisterPage`, `ProfilePage`, `ContactPage`, `TrackingPage`, `CheckoutPage` |
+| `ControlCantidad` | Sí | `value`, `onChange`, `label`, `min`, `max` | `CartPage.jsx` (línea 36) y `ProductDetailPage.jsx` (línea 57) |
+| `TablaProductosPedido` | Sí | `items` | `CheckoutPage.jsx` (línea 60) y `PurchaseResultPage.jsx` (línea 17) |
+| `MensajeEstado` | Sí | `children`, `variant`, `className` | `LoginPage`, `RegisterPage`, `CartPage`, `CheckoutPage`, `ContactPage`, `TrackingPage`, `AdminUsersPage`, `AdminUserFormPage` |
+| `LineaTiempoEstado` | Sí | `status` | `TrackingPage.jsx` |
+
+El único componente sin parámetros es `PieSitio`: su contenido es fijo (enlaces y texto de la cooperativa).
+
+### 6.2 Descripción detallada de cada componente
+
+#### `CabeceraSitio` (`CabeceraSitio.jsx`)
+- **Qué hace:** dibuja la cabecera de todas las páginas públicas: logo, menú principal (Inicio, Catálogo, Categorías, Ofertas, Nosotros, Blog, Contacto, Seguimiento), enlace «Mi cuenta» si no hay sesión, «Panel admin» si la sesión es de administrador, saludo «Hola, nombre», botón «Salir» y el ícono de carrito con contador y total.
+- **Estado interno:** `cartCount`, `cartTotal` y `session` (`useState`). Un `useEffect` escucha los eventos `storage`, `hh:cart-change` y `hh:session-change` y vuelve a leer el estado; al desmontarse quita los oyentes para no dejar fugas.
+- **Props:** `active` (texto, por defecto `''`): la ruta de la página actual; el enlace cuyo `href` coincide recibe la clase `active` (se resalta). `App.jsx` la calcula y la pasa: `<CabeceraSitio active={active} />`.
+- **Se muestra:** en la parte superior de todas las vistas públicas (no en el panel admin).
+
+#### `LogoMarca` (`LogoMarca.jsx`)
+- **Qué hace:** muestra el ícono de hoja (SVG decorativo con `aria-hidden`) y el nombre «HuertoHogar» dentro de un enlace.
+- **Props:** `href` (por defecto `'/'`): destino del enlace; `size` (por defecto `24`): ancho y alto del ícono en píxeles.
+- **Se muestra:** en `CabeceraSitio` (tamaño normal) y en `PieSitio` con `size={20}`.
+
+#### `PieSitio` (`PieSitio.jsx`)
+- **Qué hace:** pie de página con el logo, una frase de la cooperativa, la lista de enlaces de navegación (incluidas las páginas de demostración Bootstrap) y las ciudades de reparto.
+- **Props:** ninguna. Los enlaces están en un arreglo `navigation` dentro del archivo y se recorren con `map`.
+- **Se muestra:** al final de todas las vistas públicas y de la página 404.
+
+#### `PanelAdmin` (`PanelAdmin.jsx`)
+- **Qué hace:** esqueleto del panel de administración: barra lateral con la navegación (Dashboard, Órdenes, Productos, Stock crítico, Categorías, Usuarios, Reportes, Perfil), enlace a la tienda, botón «Cerrar sesión», y la zona principal con el título y el nombre de quien inició sesión. Marca como activo el ítem de la ruta actual (y también «Productos»/«Usuarios» cuando se está en sus subrutas, como `/admin/productos/nuevo`).
+- **Props:** `title` (texto del encabezado `<h1>`) y `children` (la página administrativa que se coloca en el área de contenido). `App.jsx` lo usa así: `<PanelAdmin title={title}><Page /></PanelAdmin>`.
+- **Se muestra:** envolviendo todas las rutas que empiezan por `/admin`, solo si `ProtectedAdmin` confirmó el rol `admin`.
+
+#### `TarjetaProducto` (`TarjetaProducto.jsx`)
+- **Qué hace:** tarjeta de un producto: imagen enlazada a `/producto?id=...`, insignia de descuento (`-10%`) cuando `discountPercent > 0`, nombre, precio (tachado el original y destacado el rebajado), unidad y, en la versión normal, stock y origen. El botón añade el producto al carrito y cambia a «✓ Añadido» durante un segundo gracias al hook `useTransientFeedback`. Está envuelto en `memo` para no redibujarse si sus props no cambian.
+- **Props:**
+  - `product` (objeto obligatorio): `id`, `name`, `image`, `price`, `discountedPrice`, `discountPercent`, `unit`, `stock`, `origin`.
+  - `featured` (booleano, por defecto `false`): `true` usa el diseño de «destacado» (sin stock ni superposición «Ver detalles», botón «Añadir al Carrito»).
+  - `onAdd` (función): callback que la tarjeta ejecuta con el producto; la tarjeta no escribe el carrito ella misma, lo delega al padre.
+- **Se muestra:** `HomePage` (con `featured` y `onAdd={addCartItem}`), `CatalogPage`, `CategoriesPage` y `OffersPage` (versión normal con `onAdd={addCartItem}`).
+
+#### `FiltrosCatalogo` (`FiltrosCatalogo.jsx`)
+- **Qué hace:** panel lateral con un buscador de texto, casillas de categoría (frutas, verduras, orgánicos, lácteos) y casillas de rango de precio (menos de $1.000, entre $1.000 y $3.000, más de $3.000), más el botón «Limpiar filtros», que vacía todo y devuelve el foco al buscador usando `useRef`. No guarda los filtros por sí mismo: es un componente **controlado**.
+- **Props:** `categories` y `prices` (arreglos con los valores marcados), `search` (texto) y sus funciones de cambio `setCategories`, `setPrices` y `setSearch`. Marcar o desmarcar una casilla agrega o quita el valor del arreglo mediante la función interna `toggle`.
+- **Se muestra:** en la columna izquierda de `/catalogo`; `CatalogPage.jsx` mantiene el estado y filtra los productos con él.
+
+#### `CampoFormulario` (`CampoFormulario.jsx`)
+- **Qué hace:** representa un campo de formulario completo y accesible: una etiqueta `<label>` vinculada al control mediante `htmlFor`/`id`, el control en sí, un texto de ayuda opcional (`<small class="texto-ayuda">`) y un mensaje de error opcional (`role="alert"`). Si no recibe `children`, crea por sí mismo un `<input>`; si recibe `children` (por ejemplo un `<select>` o `<textarea>`), dibuja ese control en su lugar. Cuando hay error agrega `aria-invalid="true"` y `aria-describedby` apuntando al mensaje, para que los lectores de pantalla lo anuncien.
+- **Props:** `id` (identificador que une etiqueta y control), `label` (texto de la etiqueta), `children` (control personalizado, opcional), `help` (ayuda), `error` (mensaje de error), `className` (clase del input) y `...inputProps`: cualquier otro atributo (`name`, `type`, `value`, `onChange`, `required`, `autoComplete`, etc.) se reenvía directamente al `<input>`.
+- **Se muestra:** `LoginPage` y `RegisterPage` (con `error` y los métodos de React Hook Form), `ProfilePage`, `ContactPage`, `TrackingPage` y `CheckoutPage` (aquí también como envoltorio de `<select>` y `<textarea>`).
+
+#### `ControlCantidad` (`ControlCantidad.jsx`)
+- **Qué hace:** selector de cantidad con botón «−», valor (en un `<output>` con `aria-live`) y botón «+». Antes de avisar al padre limita el número entre `min` y `max` y trata valores no numéricos como `min`. Deshabilita «−» al llegar al mínimo y «+» al llegar al máximo. Es **controlado**: no guarda la cantidad; la muestra tal como el padre la entrega.
+- **Props:** `value` (cantidad actual), `onChange` (función que recibe el nuevo valor), `label` (por defecto `'Cantidad'`; se usa en el `aria-label` de los botones: «Aumentar cantidad»), `min` (por defecto `1`) y `max` (por defecto `999`).
+- **Se muestra:** en cada línea de `/carrito` (con `label="Cantidad de <producto>"` y un `onChange` que despacha `cambiar_cantidad`) y en el detalle del producto (`onChange={setQuantity}`).
+
+#### `TablaProductosPedido` (`TablaProductosPedido.jsx`)
+- **Qué hace:** tabla de solo lectura con las columnas imagen, nombre, precio, cantidad y subtotal (precio × cantidad) de cada producto. Resuelve la imagen con `resolveProductImage` y da formato de pesos con `formatPrice`.
+- **Props:** `items` (arreglo de líneas del pedido con `id`, `nombre`, `precio`, `qty` e `imagen`).
+- **Se muestra:** en el resumen de `CheckoutPage` (el carrito a pagar) y en `PurchaseResultPage` (el detalle del pedido tras la compra).
+
+#### `MensajeEstado` (`MensajeEstado.jsx`)
+- **Qué hace:** muestra un mensaje breve de estado accesible. **No renderiza nada** si no recibe contenido. Con `variant="error"` usa `role="alert"` y `aria-live="assertive"` (se anuncia de inmediato); con cualquier otra variante, como `success`, usa `role="status"` y `aria-live="polite"` (se anuncia sin interrumpir).
+- **Props:** `children` (el texto del mensaje), `variant` (por defecto `'error'`) y `className` (clases adicionales).
+- **Se muestra:** debajo de los formularios y acciones: login, registro, carrito, checkout, contacto, seguimiento y administración de usuarios.
+
+#### `LineaTiempoEstado` (`LineaTiempoEstado.jsx`)
+- **Qué hace:** línea de tiempo de cuatro pasos (Confirmado, En preparación, En camino, Entregado). Convierte `status` en un entero entre 0 y 4, marca como activos los pasos anteriores o iguales a ese número y pone `aria-current="step"` en el último alcanzado.
+- **Props:** `status` (número del 0 al 4, por defecto `0`; los valores inválidos se tratan como 0).
+- **Se muestra:** en `/seguimiento` (`TrackingPage.jsx`), bajo el buscador de pedidos.
+
+### 6.3 Hooks personalizados que apoyan a los componentes (`src/hooks/`)
+
+| Hook | Parámetro | Qué devuelve y dónde se usa |
+| --- | --- | --- |
+| `useTransientFeedback(duration = 1000)` | `duration`: milisegundos que dura el estado activo | `{ isActive, trigger }`. `trigger()` activa el estado y lo apaga solo tras `duration`; limpia el temporizador al desmontar. Lo usan `TarjetaProducto` y `ProductDetailPage` para el «✓ Añadido». |
+| `useFetch(url)` | `url`: dirección a consultar | `{ data, loading, error }`. Pide la URL con `fetch` y cancela con `AbortController` si el componente se desmonta o cambia la URL. Lo usa `AboutPage` para cargar `/data/sucursales.json`. |
 
 ## 7. Lógica y datos (`src/js/`)
 
@@ -140,7 +210,7 @@ Todos están en `src/components/`. Se encargan de una pieza de interfaz o intera
 | `format.js` | Formateo de valores monetarios para mostrarlos como precios en pesos chilenos. |
 | `delivery.js` | Cálculo de la fecha mínima disponible para coordinar una entrega. |
 | `validation.js` | Reglas reutilizables de validación, incluida la expresión de correo aceptada por los formularios. |
-| `useTransientFeedback.js` | Hook que activa temporalmente una confirmación visual después de una acción, como añadir un producto. |
+| `src/hooks/useTransientFeedback.js` | Hook que activa temporalmente una confirmación visual después de una acción, como añadir un producto. |
 
 ### Persistencia de demostración
 
@@ -150,13 +220,13 @@ Todos están en `src/components/`. Se encargan de una pieza de interfaz o intera
 
 El recorrido de compra conecta las páginas, los componentes reutilizables y las funciones de almacenamiento. Se puede explicar así:
 
-1. **Elegir un producto.** En el inicio, el catálogo y las ofertas se muestran tarjetas `ProductCard`. La tarjeta recibe el producto y la función `addCartItem` por la propiedad `onAdd`. En el detalle (`/producto?id=...`), la página obtiene el producto del catálogo, permite elegir unidades con `QuantityControl` y llama directamente a `addCartItem`.
+1. **Elegir un producto.** En el inicio, el catálogo y las ofertas se muestran tarjetas `TarjetaProducto`. La tarjeta recibe el producto y la función `addCartItem` por la propiedad `onAdd`. En el detalle (`/producto?id=...`), la página obtiene el producto del catálogo, permite elegir unidades con `ControlCantidad` y llama directamente a `addCartItem`.
 2. **Añadirlo al carrito.** `addCartItem` (`src/js/storage.js`) lee el carrito guardado con `getCart()`. Si el mismo identificador ya está, suma la cantidad; si no, crea una línea con identificador, nombre, precio vigente, imagen y cantidad. El precio usa el valor con descuento cuando existe. Luego `saveCart()` guarda el carrito en `hh_carrito`, recalcula el total de unidades en `hh_carrito_cantidad` y emite `hh:cart-change`.
-3. **Actualizar el indicador de la cabecera.** `SiteHeader` (`src/components/SiteHeader.jsx`) obtiene el total con `getItemCount()` y escucha `hh:cart-change` (además del evento `storage`). Por eso el número junto al ícono de carrito refleja la suma de unidades, no la cantidad de líneas distintas. El ícono es un enlace a `/carrito`; `App.jsx` asocia esa ruta con `CartPage`.
-4. **Revisar y editar el pedido.** `CartPage` carga las líneas con `getCart()`. `QuantityControl` permite modificar cada cantidad y el botón de eliminar quita esa línea; ambas acciones llaman a `updateCart()`, que actualiza el estado de React y persiste el resultado mediante `saveCart()`. El subtotal es la suma de precio por cantidad. El despacho cuesta `$2.990 CLP` cuando el subtotal es menor a `$25.000 CLP`; desde ese umbral es gratis. El total mostrado suma subtotal y despacho.
+3. **Actualizar el indicador de la cabecera.** `CabeceraSitio` (`src/components/CabeceraSitio.jsx`) obtiene el total con `getItemCount()` y escucha `hh:cart-change` (además del evento `storage`). Por eso el número junto al ícono de carrito refleja la suma de unidades, no la cantidad de líneas distintas. El ícono es un enlace a `/carrito`; `App.jsx` asocia esa ruta con `CartPage`.
+4. **Revisar y editar el pedido.** `CartPage` carga las líneas con `getCart()`. `ControlCantidad` permite modificar cada cantidad y el botón de eliminar quita esa línea; ambas acciones llaman a `updateCart()`, que actualiza el estado de React y persiste el resultado mediante `saveCart()`. El subtotal es la suma de precio por cantidad. El despacho cuesta `$2.990 CLP` cuando el subtotal es menor a `$25.000 CLP`; desde ese umbral es gratis. El total mostrado suma subtotal y despacho.
 5. **Elegir fecha de entrega.** El campo de fecha conserva su valor en `hh_fecha_entrega`, y `getMinimumDeliveryDate()` establece hoy como fecha mínima seleccionable. Esa fecha se muestra como dato del pedido; en el código actual no es una condición obligatoria para confirmar.
 6. **Confirmar.** Al pulsar **Confirmar pedido**, `confirmOrder()` comprueba que haya al menos un producto. Si el carrito está vacío, presenta un mensaje y no registra nada. Si tiene productos, crea el pedido con un código `HH-` y cinco dígitos, fecha de creación, fecha de entrega (o “Fecha por confirmar”), líneas, subtotal, despacho, total, estado inicial y, si hay una sesión, sus datos de cliente. Guarda el pedido más reciente en `hh_ultimo_pedido`, lo agrega al comienzo de `hh_pedidos` y vacía el carrito con `saveCart([])`.
-7. **Mostrar comprobante y permitir seguimiento.** `CartPage` entrega el pedido a `OrderReceiptModal`. El diálogo enseña el código, la entrega y el total, y su enlace **Ver seguimiento** abre `/seguimiento?codigo=...`. `TrackingPage` busca el código en `hh_pedidos` y representa el estado con `StatusTimeline`.
+7. **Pagar, mostrar la boleta y permitir seguimiento.** `CartPage` lleva a `/checkout`; `CheckoutPage` valida los datos, simula el pago y guarda el pedido (`js/checkout.js`). `PurchaseResultPage` muestra la compra exitosa con boleta (o el error con opción de reintentar) y su enlace **Ver seguimiento** abre `/seguimiento?codigo=...`. `TrackingPage` busca el código en `hh_pedidos` y representa el estado con `LineaTiempoEstado`.
 
 **Importante para explicarlo con precisión:** este proyecto registra un pedido de demostración en el almacenamiento local del navegador. No procesa un pago real, no envía el pedido a un servidor y no descuenta ni valida inventario al confirmar. El botón dice “Confirmar pedido”, pero no está conectado a una pasarela de pago.
 
@@ -164,16 +234,16 @@ El recorrido de compra conecta las páginas, los componentes reutilizables y las
 
 | Control o acción visible | Con qué está conectado | Resultado |
 | --- | --- | --- |
-| Ícono/botón de carrito en la cabecera | Enlace `href="/carrito"` de `SiteHeader` → ruta `/carrito` en `App.jsx` → `CartPage` | Abre el carrito. El contador consulta `getItemCount()` y se actualiza al recibir `hh:cart-change`. |
-| “Añadir” en una tarjeta de producto | `ProductCard` → propiedad `onAdd` → `addCartItem()` | Agrega una unidad o aumenta la cantidad de ese producto; muestra una confirmación visual temporal. |
-| “Añadir al Carrito” en la ficha | `ProductDetailPage` → `QuantityControl` + `addCartItem(displayProduct, quantity)` | Agrega al carrito la cantidad seleccionada. |
-| Filtros y búsqueda del catálogo | `CatalogFilters` → estado de `CatalogPage` → filtrado de `getCatalogProducts()` | Cambia los productos visibles por categoría, rango de precio o texto. |
-| Botones `+` y `−` del carrito | `QuantityControl` → `onChange` de `CartPage` → `updateCart()` → `saveCart()` | Cambia unidades, subtotal, despacho, total y contador de la cabecera. El rango permitido es de 1 a 999 unidades por línea. |
+| Ícono/botón de carrito en la cabecera | Enlace `href="/carrito"` de `CabeceraSitio` → ruta `/carrito` en `App.jsx` → `CartPage` | Abre el carrito. El contador consulta `getItemCount()` y se actualiza al recibir `hh:cart-change`. |
+| “Añadir” en una tarjeta de producto | `TarjetaProducto` → propiedad `onAdd` → `addCartItem()` | Agrega una unidad o aumenta la cantidad de ese producto; muestra una confirmación visual temporal. |
+| “Añadir al Carrito” en la ficha | `ProductDetailPage` → `ControlCantidad` + `addCartItem(displayProduct, quantity)` | Agrega al carrito la cantidad seleccionada. |
+| Filtros y búsqueda del catálogo | `FiltrosCatalogo` → estado de `CatalogPage` → filtrado de `getCatalogProducts()` | Cambia los productos visibles por categoría, rango de precio o texto. |
+| Botones `+` y `−` del carrito | `ControlCantidad` → `onChange` de `CartPage` → `updateCart()` → `saveCart()` | Cambia unidades, subtotal, despacho, total y contador de la cabecera. El rango permitido es de 1 a 999 unidades por línea. |
 | Botón de eliminar del carrito | Acción en `CartPage` → `updateCart()` → `saveCart()` | Quita el producto y recalcula los importes y el contador. |
 | Campo “Fecha de entrega” del carrito | Estado `delivery` de `CartPage` → `writeStorage('hh_fecha_entrega', ...)` | Conserva la fecha elegida en el navegador para mostrarla al crear el pedido. |
 | “Confirmar pedido” | `CartPage.confirmOrder()` → `createOrder()` → `writeStorage()` | Registra el pedido localmente, vacía el carrito y abre el comprobante; no cobra. |
 | “Ver seguimiento” del comprobante | Enlace a `/seguimiento?codigo=...` → `TrackingPage` → `getOrders()` | Consulta el pedido por su código y muestra su etapa. |
-| “Salir” | `SiteHeader.logout()` → elimina `sesion_activa` → evento `hh:session-change` | Cierra la sesión local, actualiza la cabecera y vuelve al inicio. |
+| “Salir” | `CabeceraSitio.logout()` → elimina `sesion_activa` → evento `hh:session-change` | Cierra la sesión local, actualiza la cabecera y vuelve al inicio. |
 
 ### Respuesta modelo para una evaluación oral
 
@@ -186,20 +256,20 @@ La pauta tiene una parte grupal (Situación evaluativa 1) y una presentación in
 | Indicador | Estado del proyecto revisado | Evidencia y alcance |
 | --- | --- | --- |
 | **Grupal IE2.1.1** | Diseño frontend funcional con framework JavaScript. | **Cumplido en la implementación revisada.** React y Vite organizan rutas, páginas, componentes, lógica y estilos; el build de producción termina correctamente. La tienda es una demostración frontend local, no un servicio con backend. |
-| **Grupal IE2.1.2** | Componentes React con props/estado y diseño responsivo mediante Bootstrap. | **Cumplido en el código revisado.** `ProductCard` recibe `product`, `featured` y `onAdd`; `QuantityControl` recibe `value` y `onChange`; páginas gestionan estado con hooks. `main.jsx` importa Bootstrap CSS, la interfaz usa grilla responsive (`col-12`, `col-sm-6`, `col-xl-4`) y CSS propio con `@media`. |
-| **Grupal IE2.2.1** | Diez pruebas unitarias de componentes con Jasmine/Karma. | **Cumplido en la última ejecución.** `components.karma.jsx` contiene 10 casos y `npm run test:karma` terminó con **10/10 SUCCESS** en ChromeHeadless. |
-| **Grupal IE2.3.1** | Configuración, pruebas, mocks, análisis de resultados y cobertura. | **Implementado, con cobertura parcial.** Karma configura Jasmine, Webpack/Babel, ChromeHeadless e Istanbul; hay spies Jasmine y mocks de almacenamiento para Vitest. Ambas suites producen resultados y reportes de cobertura descritos en la sección 3. La cobertura no es exhaustiva para toda la aplicación. |
+| **Grupal IE2.1.2** | Componentes React con props/estado y diseño responsivo mediante Bootstrap. | **Cumplido en el código revisado.** `TarjetaProducto` recibe `product`, `featured` y `onAdd`; `ControlCantidad` recibe `value` y `onChange`; páginas gestionan estado con hooks. `main.jsx` importa Bootstrap CSS, la interfaz usa grilla responsive (`col-12`, `col-sm-6`, `col-xl-4`) y CSS propio con `@media`. |
+| **Grupal IE2.2.1** | Pruebas unitarias de componentes y hooks (10 pruebas). | **Cumplido en la última ejecución.** Hay 10 pruebas en `src/test` (una por archivo) y `npm run test:run` terminó con **10/10**. Se usa Vitest porque es lo que enseña la guía de testing del curso; la rúbrica nombra Jasmine y Karma, así que conviene confirmar con el docente que Vitest es válido. |
+| **Grupal IE2.3.1** | Configuración, pruebas, mocks, análisis de resultados y cobertura. | **Implementado, con cobertura parcial.** `vite.config.js` configura Vitest con jsdom, `setup.js`, `renderHook`/`act` para hooks, `vi.fn` y `vi.stubGlobal` como mocks y cobertura V8 (`text`, `json`, `html`). La cobertura no es exhaustiva para toda la aplicación. |
 | **Individual IE2.1.3** | Exponer el diseño y construcción de la aplicación frontend. | **No verificable desde el repositorio.** El código y las preguntas de la sección 11 dan material para explicar arquitectura, navegación, componentes y compra; cada estudiante debe exponerlo con claridad. |
 | **Individual IE2.1.4** | Mostrar componentes, props, estado y responsividad Bootstrap. | **No verificable hasta la presentación.** El proyecto incluye ejemplos demostrables de props, estado y grilla adaptable; el/la estudiante debe mostrarlos y explicar el flujo. |
-| **Individual IE2.2.2** | Demostrar las diez pruebas Jasmine/Karma y su aporte a la calidad. | **Preparado, pero depende de la demostración individual.** Las diez pruebas pasan; se deben ejecutar y explicar las acciones y expectativas durante la presentación. |
+| **Individual IE2.2.2** | Demostrar las 10 pruebas Vitest y su aporte a la calidad. | **Preparado, pero depende de la demostración individual.** Las pruebas pasan; se deben ejecutar y explicar las acciones y expectativas durante la presentación. |
 | **Individual IE2.3.2** | Explicar configuración, pruebas, mocks y análisis de resultados. | **Preparado, pero depende de la explicación individual.** La configuración y los reportes están disponibles; el/la estudiante debe explicar qué mide cada uno y sus límites. |
 
-**Validación realizada en esta revisión:** `npm run build` terminó correctamente, `npm run lint` no reportó problemas, `npm test` pasó **14/14** y `npm run test:karma` pasó **10/10**. En navegador, a **375 px** de ancho no se observó desbordamiento horizontal en inicio; también se comprobó que la tarjeta de manzanas ahora muestra `$1.200 CLP` como precio anterior y `$1.080 CLP` como precio rebajado.
+**Validación realizada en esta revisión:** `npm run build` terminó correctamente, `npm run lint` no reportó problemas, `npm run test:run` pasó **10/10**. En navegador, a **375 px** de ancho no se observó desbordamiento horizontal en inicio; también se comprobó que la tarjeta de manzanas ahora muestra `$1.200 CLP` como precio anterior y `$1.080 CLP` como precio rebajado.
 
 ### Brechas que aún no se deben presentar como resueltas
 
 - El proyecto importa **Bootstrap CSS** y usa sus clases utilitarias y grilla; también tiene reglas responsivas propias. Aunque `react-bootstrap` figura como dependencia, la interfaz descrita aquí demuestra el uso del CSS de Bootstrap y no depende de componentes importados desde esa biblioteca.
-- La cobertura V8 y la de Istanbul corresponden a suites y módulos medidos distintos; no equivalen a una medición completa del frontend.
+- La cobertura V8 mide todo `src/`; las páginas sin pruebas reducen el total, por lo que no equivale a una medición completa del frontend.
 - Los criterios individuales no se pueden corregir solo modificando el software: cada integrante debe poder presentar y responder preguntas por sí mismo.
 - El carrito, los usuarios de prueba y los pedidos se guardan en `localStorage`; en consecuencia, la aplicación es una demostración frontend y no un sistema conectado a un backend o una pasarela de pago.
 
@@ -225,7 +295,7 @@ Las respuestas son modelos para comprender y adaptar al exponer. Conviene poder 
 
 **4. ¿Cómo se comunican las propiedades y el estado entre componentes?**
 
-> “Las propiedades llevan datos o callbacks del padre al hijo. Por ejemplo, `CatalogPage` entrega a `ProductCard` el objeto `product` y `addCartItem` como `onAdd`; la tarjeta no escribe el almacenamiento directamente, sino que llama al callback recibido. `QuantityControl` también es controlado: recibe `value` y `onChange`; el padre conserva el estado y decide qué hacer con la nueva cantidad. En páginas se usan hooks como `useState` para datos que cambian y provocan el render correspondiente.”
+> “Las propiedades llevan datos o callbacks del padre al hijo. Por ejemplo, `CatalogPage` entrega a `TarjetaProducto` el objeto `product` y `addCartItem` como `onAdd`; la tarjeta no escribe el almacenamiento directamente, sino que llama al callback recibido. `ControlCantidad` también es controlado: recibe `value` y `onChange`; el padre conserva el estado y decide qué hacer con la nueva cantidad. En páginas se usan hooks como `useState` para datos que cambian y provocan el render correspondiente.”
 
 **5. ¿Cómo se implementó el diseño responsivo y qué aporta Bootstrap?**
 
@@ -233,36 +303,33 @@ Las respuestas son modelos para comprender y adaptar al exponer. Conviene poder 
 
 ### Pruebas unitarias, mocks y resultados
 
-**6. ¿Cómo se configuró y cómo se ejecuta la suite de componentes?**
+**6. ¿Cómo se configuró y cómo se ejecuta la suite?**
 
-> “Karma está configurado en `karma.conf.cjs` con Jasmine como framework, `karma-entry.jsx` como entrada, Webpack y Babel para transformar JSX, y ChromeHeadless como navegador sin interfaz. `npm run test:karma` ejecuta una sola corrida. En la última ejecución se compilaron los casos y ChromeHeadless informó 10 de 10 exitosos.”
-> “Además, Babel instrumenta el código fuente que carga esa suite con Istanbul; Karma presenta el resumen y crea el reporte HTML `coverage-karma/html/index.html` para inspeccionar líneas, funciones, ramas y sentencias cubiertas.”
+> “Vitest se configura en `vite.config.js`: `globals`, entorno jsdom, `src/testing/setup.js` (limpia el DOM y `localStorage`) y cobertura V8 con reporteros `text`, `json` y `html`. Los componentes se prueban con React Testing Library y los Custom Hooks con `renderHook` y `act`. `npm run test:run` ejecuta una vez y `npm run test:coverage` agrega la cobertura.”
 
-**7. ¿Qué 10 pruebas de componentes se hicieron y qué validan?**
+**7. ¿Qué 10 pruebas se hicieron y qué validan?**
 
-> “La suite prueba: (1) incremento en `QuantityControl`; (2) decremento; (3) límites mínimo y máximo; (4) que `StatusMessage` no renderice vacío; (5) rol de alerta y anuncio accesible para error; (6) rol de estado y anuncio para éxito; (7) pasos completados y paso actual en `StatusTimeline`; (8) asociación entre etiqueta y campo en `FormField`; (9) búsqueda y limpieza de filtros en `CatalogFilters`; y (10) que `ProductCard` llame `onAdd` con el producto correcto. Se pueden ver los eventos simulados y las expectativas en `src/test/components/components.karma.jsx`.”
+> “(1) `useTransientFeedback` con `renderHook`, `act` y temporizadores simulados; (2) `useFetch` con `fetch` simulado; (3) `ControlCantidad`; (4) `MensajeEstado`; (5) `FiltrosCatalogo` con un padre con estado y el foco con `useRef`; (6) `TarjetaProducto`; (7) despacho y validación del checkout; (8) y (9) pago aprobado y rechazado; y (10) el stock crítico. Están en `src/test`.”
 
 **8. ¿Qué es un mock o un spy y dónde se utiliza en este proyecto?**
 
-> “Se usa para aislar la unidad bajo prueba y controlar dependencias externas o callbacks. En Karma, `jasmine.createSpy` permite comprobar que `onChange`, `onAdd` o los setters se llamen con los argumentos esperados, sin ejecutar una acción real del padre. En Vitest, `src/test/testUtils.js` reemplaza `localStorage` y parte de `window` con funciones simuladas y un mapa en memoria; así cada prueba puede preparar datos y verificar escrituras/eventos sin depender del almacenamiento real del navegador.”
+> “Se usa para aislar la unidad bajo prueba y controlar dependencias externas o callbacks. Con `vi.fn()` de Vitest se puede comprobar que `onChange`, `onAdd` o los setters se llamen con los argumentos esperados, sin ejecutar una acción real del padre. Además, `vi.stubGlobal('fetch', vi.fn(...))` reemplaza `fetch` en la prueba de `useFetch`, y `src/testing/setup.js` vacía `localStorage` después de cada prueba para que ninguna dependa del almacenamiento de otra.”
 
-**9. ¿Qué diferencia hay entre las pruebas de Vitest y las de Karma/Jasmine?**
+**9. ¿Qué tipos de prueba hay en Vitest?**
 
-> “Vitest ejecuta las pruebas de lógica de catálogo, carrito, sesión y almacenamiento con `npm test`; en la ejecución revisada pasaron 14 pruebas en 10 archivos. Karma/Jasmine ejecuta por separado los 10 casos de componentes React en ChromeHeadless. No se deben sumar como si fueran una única corrida ni confundir el reporte V8 con la suite de Karma.”
+> “Hay pruebas de hooks (`renderHook`), de componentes, de lógica y de flujos, todas con Vitest, el mismo comando y el mismo reporte V8.”
 
 **10. ¿Cómo se interpreta el informe de cobertura y qué conclusión se puede presentar?**
 
-> “El informe V8 registra líneas, sentencias, funciones y ramas alcanzadas por las pruebas Vitest. En esta ejecución reportó 79,26 % de líneas, 77,45 % de sentencias, 78,37 % de funciones y 72,97 % de ramas. Significa que queda código sin ejecutar por estas pruebas; no significa que el 79,26 % de toda la aplicación esté probado, porque la medición se concentra en los módulos instrumentados y no incluye Karma. Las pruebas pasaron, pero aún hay margen para agregar casos y subir la cobertura.”
->
-> “Por separado, Karma/Istanbul ejecutó 10 de 10 casos y reportó 90,47 % de líneas y 73,21 % de ramas en los módulos cargados por la suite de componentes. Ese porcentaje tampoco representa toda la app: mide solo el código instrumentado que realmente entró en esa suite. No mezclo ni sumo ambos porcentajes; los presento con su herramienta, alcance y limitación.”
+> “El informe V8 registra líneas, sentencias, funciones y ramas alcanzadas. El total de `src/` es bajo (cerca de 22 %) porque con 10 pruebas se priorizaron los flujos críticos; los módulos probados, como `checkout.js` o `useTransientFeedback.js`, están casi completos. Presento ambos datos con su alcance.”
 
 ### Guion breve de demostración individual
 
 1. Explicar la ruta de entrada: `index.html` → `main.jsx` → `App.jsx`.
-2. Mostrar un producto y añadirlo desde tarjeta o detalle; señalar `ProductCard`, `onAdd` y `addCartItem`.
-3. Abrir el ícono del carrito; cambiar cantidad y explicar `QuantityControl`, `saveCart` y el contador.
-4. Confirmar un pedido de demostración, enseñar el comprobante y abrir el seguimiento; aclarar que no existe pago/backend real.
-5. Ejecutar `npm run test:karma` para enseñar los 10 casos y `npm test` para la suite de lógica; si preguntan por cobertura, ejecutar el comando V8 de la sección 3 y explicar su alcance parcial.
+2. Mostrar un producto y añadirlo desde tarjeta o detalle; señalar `TarjetaProducto`, `onAdd` y `addCartItem`.
+3. Abrir el ícono del carrito; cambiar cantidad y explicar `ControlCantidad`, `saveCart` y el contador.
+4. Ir a pagar desde el carrito, completar el checkout (región y comuna dependientes) y mostrar la vista de compra exitosa o la de error con reintento.
+5. Ejecutar `npm run test:informe` para enseñar las 10 pruebas y `npm run test:coverage` para el informe V8; aclarar que el total de `src/` incluye páginas sin pruebas.
 
 ## 12. Hojas de estilo (`src/styles/`)
 
@@ -288,28 +355,104 @@ Las respuestas son modelos para comprender y adaptar al exponer. Conviene poder 
 
 `src/App.css` añade correcciones y reglas responsivas que cruzan más de una sección (por ejemplo, ajustes de tarjetas y cabecera en pantallas estrechas); `src/index.css` define los estilos mínimos de documento y raíz.
 
-## 13. Pruebas (`src/test/`)
+## 13. Pruebas unitarias (`src/test/`)
 
-Las pruebas Vitest (`*.test.js`) verifican funciones de catálogo, carrito, almacenamiento y sesión. `npm test` las ejecuta.
+Hay **10 archivos de prueba**, cada uno con **1 prueba**: **10/10 aprobadas**. Se ejecutan con `npm run test:run`.
 
-| Archivo | Qué comprueba |
-| --- | --- |
-| `add-cart-item.test.js` | Añadir un producto nuevo al carrito. |
-| `add-existing-cart-item.test.js` | Incrementar la cantidad cuando el producto ya está en el carrito. |
-| `get-cart-normalization.test.js` | Normalización y tratamiento de valores del carrito leídos desde almacenamiento. |
-| `get-catalog-products.test.js` | Construcción del catálogo a partir de productos base y datos guardados. |
-| `get-users.test.js` | Lectura y validación básica de usuarios persistidos. |
-| `read-storage-fallback.test.js` | Uso del valor alternativo cuando no hay un valor guardado. |
-| `read-storage-invalid-json.test.js` | Uso del valor alternativo cuando el contenido guardado no es JSON válido. |
-| `save-cart.test.js` | Persistencia del carrito y actualización del contador/evento relacionado. |
-| `session.test.js` | Lectura, guardado y notificación de cambios de sesión. |
-| `write-storage.test.js` | Serialización y escritura en `localStorage`. |
-| `testUtils.js` | Utilidades compartidas para preparar y aislar el almacenamiento en pruebas. |
-| `components/components.karma.jsx` | Diez casos Jasmine de componentes React mediante React Testing Library: cantidad, mensajes accesibles, timeline, etiquetas, filtros y callback de tarjeta. |
-| `karma-entry.jsx` | Entrada de Karma que carga la suite de componentes anterior. |
-| `PRUEBAS.md` | Explica cómo ejecutar y qué cubren las pruebas de componentes Karma/Jasmine. |
+**Herramientas:** Vitest (ejecuta las pruebas), jsdom (simula el navegador) y React Testing Library (dibuja los componentes y simula clics y escritura).
 
-Las pruebas de componentes usan Karma + Jasmine + React Testing Library y se ejecutan por separado con `npm run test:karma`. `karma.conf.cjs` configura ChromeHeadless y Babel/Webpack para esta suite. La suite Vitest usa spies/mocks para las funciones y el almacenamiento; el reporte V8 descrito arriba se calcula solo al ejecutar Vitest.
+**Idea general:** cada prueba hace tres pasos.
+1. **Preparar:** dibuja el componente con datos de ejemplo.
+2. **Actuar:** hace lo que haría una persona (clic, escribir) o deja pasar el tiempo.
+3. **Comprobar:** con `expect` revisa que el resultado sea el esperado.
+
+**Palabras que aparecen:**
+- **Mock (`vi.fn()`):** una función falsa que anota si fue llamada y con qué valor.
+- **Componente controlado:** no guarda el valor; lo recibe del padre y le avisa cuando algo cambia.
+- **Temporizador falso:** permite adelantar el reloj sin esperar de verdad.
+
+**Ayudantes (carpeta `src/testing/`):** `setup.js` limpia la pantalla y `localStorage` después de cada prueba; `productFixture.js` crea un producto de ejemplo; `PadreFiltros.jsx` es un padre simple que sirve para probar los filtros.
+
+### 13.1 Resumen
+
+| N.º | Archivo | Qué prueba | En una frase |
+| --- | --- | --- | --- |
+| 1 | `aviso-temporal.test.jsx` | Hook del «✓ Añadido» | Se activa y se apaga solo a los 1000 ms |
+| 2 | `carga-datos.test.jsx` | Hook que carga datos | Pasa de «cargando» a «datos listos» |
+| 3 | `control-cantidad.test.jsx` | `ControlCantidad` | Los botones + y − avisan al padre y respetan mínimo y máximo |
+| 4 | `mensaje-estado.test.jsx` | `MensajeEstado` | No muestra nada vacío y distingue error de éxito |
+| 5 | `filtros-catalogo.test.jsx` | `FiltrosCatalogo` | Los filtros actualizan al padre y «Limpiar» los borra |
+| 6 | `tarjeta-producto.test.jsx` | `TarjetaProducto` | Muestra precio y descuento y avisa al añadir |
+| 7 | `calculos-checkout.test.jsx` | Cálculos del checkout | IVA, despacho y validación del formulario |
+| 8 | `pago-aprobado.test.jsx` | Pago aprobado | Guarda el pedido y vacía el carrito |
+| 9 | `pago-rechazado.test.jsx` | Pago rechazado | No guarda pedido y conserva el carrito |
+| 10 | `stock-critico.test.jsx` | Stock crítico | Lista solo productos con 10 o menos unidades |
+
+### 13.2 Cada prueba explicada
+
+#### 1. `useTransientFeedback` — el aviso temporal
+- **Qué es:** el hook que hace aparecer «✓ Añadido» un momento en `TarjetaProducto`.
+- **Qué hace la prueba:** lo activa y adelanta el reloj.
+- **Qué comprueba:** empieza apagado, al activarlo se enciende, sigue encendido a los 999 ms y se apaga a los 1000 ms.
+- **Por qué sirve:** prueba que dura justo el tiempo indicado.
+
+#### 2. `useFetch` — carga de datos
+- **Qué es:** el hook que `AboutPage` usa para leer las sucursales.
+- **Qué hace la prueba:** cambia `fetch` por uno falso que responde `[{ ciudad: 'Santiago' }]`.
+- **Qué comprueba:** al inicio `loading` es verdadero y `data` es nulo; al terminar `loading` es falso, `data` trae Santiago y no hay error.
+- **Por qué sirve:** verifica los dos estados del hook sin usar internet.
+
+#### 3. `ControlCantidad` — selector de cantidad
+- **Qué es:** los botones − y + del carrito y del detalle.
+- **Qué hace la prueba:** pulsa «Aumentar» y «Disminuir» con valor 2 (mínimo 1, máximo 3).
+- **Qué comprueba:** avisa al padre con 3 y con 1; el número mostrado sigue en 2 hasta que el padre lo cambie; con valor 3 el + queda deshabilitado y con valor 1 el − queda deshabilitado.
+- **Por qué sirve:** confirma que respeta los límites y que no guarda la cantidad por sí mismo.
+
+#### 4. `MensajeEstado` — mensajes de estado
+- **Qué es:** el texto de error o éxito bajo los formularios.
+- **Qué hace la prueba:** lo dibuja sin texto, con texto de error y con texto de éxito.
+- **Qué comprueba:** sin texto no aparece nada; un error se marca como `alert` y un éxito como `status`.
+- **Por qué sirve:** asegura que no queden mensajes vacíos y que los lectores de pantalla los anuncien bien.
+
+#### 5. `FiltrosCatalogo` — filtros del catálogo
+- **Qué es:** el panel con buscador, categorías y precios de `/catalogo`.
+- **Qué hace la prueba:** escribe «manzana», marca dos categorías y un precio, desmarca una categoría y pulsa «Limpiar filtros».
+- **Qué comprueba:** el padre recibe cada cambio; al limpiar todo queda vacío y el cursor vuelve al buscador.
+- **Por qué sirve:** prueba que el componente y su padre se comunican bien.
+
+#### 6. `TarjetaProducto` — tarjeta de producto
+- **Qué es:** la tarjeta que se ve en inicio, catálogo y ofertas.
+- **Qué hace la prueba:** la dibuja con un producto de ejemplo y pulsa «Añadir».
+- **Qué comprueba:** se ven el nombre, el precio tachado ($1.000), el precio con descuento ($900), la insignia -10 %, el stock y el enlace al detalle; al pulsar, llama a `onAdd` una vez con el producto y el botón dice «✓ Añadido».
+- **Por qué sirve:** cubre lo que se muestra y la acción principal de la tarjeta.
+
+#### 7. `checkout` — cálculos y validación
+- **Qué es:** las funciones `calculateTotals` y `validateCheckout`.
+- **Qué hace la prueba:** les entrega un carrito y datos de cliente de ejemplo.
+- **Qué comprueba:** 3 × $1.000 da IVA 570, despacho 2.990 y total 6.560; con $30.000 el despacho es 0; datos correctos no dan errores y datos malos dan error en nombre, correo, calle y comuna.
+- **Por qué sirve:** protege las reglas del dinero con números concretos.
+
+#### 8. Pago aprobado
+- **Qué es:** la página de pago cuando la pasarela aprueba.
+- **Qué hace la prueba:** llena nombre, apellidos, correo y calle, y pulsa «Pagar ahora».
+- **Qué comprueba:** se guarda el pedido, va a `/compra/exitosa`, el carrito queda vacío, el total suma bien y el stock de Manzanas Fuji baja a 30.
+- **Por qué sirve:** recorre toda la compra exitosa de principio a fin.
+
+#### 9. Pago rechazado
+- **Qué es:** la misma página cuando la pasarela rechaza.
+- **Qué hace la prueba:** hace los mismos pasos que la anterior pero con pago rechazado.
+- **Qué comprueba:** no se guarda ningún pedido, va a `/compra/error` y el carrito sigue con su producto.
+- **Por qué sirve:** demuestra que un pago fallido no pierde el carrito y se puede reintentar.
+
+#### 10. Stock crítico
+- **Qué es:** la página `/admin/productos-criticos`.
+- **Qué hace la prueba:** guarda tres productos con stock 8 kg, 3 y 11 y abre la página.
+- **Qué comprueba:** solo aparecen los de stock 3 y 8, en ese orden, mostrando solo el número; el de 11 no sale.
+- **Por qué sirve:** verifica el límite de 10 unidades, el orden y que ignora la unidad «kg».
+
+### 13.3 Resultado y cobertura
+
+Última ejecución: **10 archivos, 10 pruebas, todas aprobadas**. La cobertura V8 de todo `src/` es baja (cerca de 23 % de sentencias) porque se probaron primero los componentes reutilizables y el flujo de compra; las páginas sin prueba explican la diferencia. El reporte se genera con `npm run test:coverage` y se abre en `coverage-v8/index.html`.
 
 ## 14. Imágenes (`src/img/` y `public/`)
 
@@ -334,24 +477,19 @@ Los archivos dentro de `src/img/` se importan desde el código, por lo que Vite 
 
 | Archivo | Para qué sirve |
 | --- | --- |
-| `package.json` | Nombre del proyecto, dependencias y comandos npm: Vite, Vitest, Karma/Jasmine, instrumentación de cobertura Istanbul y lint. |
+| `package.json` | Nombre del proyecto, dependencias y comandos npm: Vite, Vitest, jsdom, React Testing Library, React Hook Form, Yup y cobertura V8. |
 | `package-lock.json` | Versiones concretas del árbol de dependencias para instalaciones reproducibles. |
-| `vite.config.js` | Configuración de Vite y activación del plugin de React. |
-| `karma.conf.cjs` | Configuración CommonJS de Karma, Jasmine, Webpack/Babel, instrumentación Istanbul, reportes de cobertura y ChromeHeadless para las pruebas de componentes. |
+| `vite.config.js` | Configuración de Vite, plugin de React y de Vitest (jsdom, setup y cobertura V8 con `text`, `json` y `html`). |
 | `.oxlintrc.json` | Reglas/opciones de Oxlint. |
 | `.gitignore` | Rutas y archivos locales que Git debe ignorar, como `node_modules/` y `dist/`. |
 | `README.md` | Resumen del proyecto, rutas principales, comandos y credenciales locales de demostración. |
 | `docs/huerto-hogar/GUIA-CODIGO.md` | Esta guía de estructura, funcionamiento, ejecución y pruebas. |
-| `docs/huerto-hogar/rubrica.md` | Rúbrica de evaluación grupal e individual usada para organizar la sección de preparación de esta guía. |
-| `docs/huerto-hogar/evaluacion-iva.md` | Documento de evaluación relacionado con IVA. |
-| `docs/huerto-hogar/Especificacion_Requerimientos_HuertoHogar_IEEE830_V2 (1).docx` | Especificación de requerimientos del proyecto en formato Word. |
-| `docs/huerto-hogar/Planilla_Requerimientos_HuertoHogar.xlsx` | Planilla de requerimientos en formato Excel. |
 
-## 16. Carpeta `coverage/`
+## 16. Carpeta `coverage-v8/`
 
-`coverage/` contiene archivos de salida para un reporte HTML de cobertura, no componentes ni recursos que se importen para ejecutar React. El reporte tiene una portada (`index.html`), hojas y scripts de presentación (`base.css`, `prettify.css`, `prettify.js`, `sorter.js`, `block-navigation.js`), iconos (`favicon.png`, `sort-arrow-sprite.png`) y páginas navegables bajo `img/`, `js/` y `test/` para los archivos que aparecen en ese reporte.
+`coverage-v8/` contiene el reporte HTML de cobertura V8 generado por Vitest (`index.html`, hojas de estilo y un HTML por archivo fuente) y `clover.xml`. No son componentes ni recursos que se importen para ejecutar React.
 
-No edites manualmente esos archivos: se regeneran al producir un reporte. El comando de esta guía usa `coverage-v8/` para mantener separada la salida nueva de la carpeta `coverage/` existente.
+No edites manualmente esos archivos: se regeneran con `npm run test:coverage`.
 
 ## 17. CUENTA DE PRUEBA ADMIN
 

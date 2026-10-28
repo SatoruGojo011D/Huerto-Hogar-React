@@ -14,11 +14,29 @@ npm run dev
 ```sh
 npm run build
 npm run lint
-npm test
-npm run test:karma
+npm run test:run      # pruebas unitarias, una sola ejecución
+npm run test:informe  # informe de pruebas en la terminal
+npm run test:coverage # cobertura V8 (terminal + coverage-v8/index.html)
 ```
 
-Vitest ejecuta las pruebas de utilidades de datos y almacenamiento existentes en `src/test/`. Karma con Jasmine ejecuta 10 pruebas unitarias de componentes React desde `src/test/components/components.karma.jsx`; estas se documentan en `src/test/PRUEBAS.md`. Para correr las pruebas Karma se necesita Google Chrome instalado.
+Las **10 pruebas unitarias** usan **Vitest**, jsdom y React Testing Library, siguiendo la guía de testing del curso: Custom Hooks con `renderHook` y `act`, componentes (props, estado, renderizado condicional y eventos) y los flujos de compra y stock crítico. Están en `src/test` y se describen en `docs/huerto-hogar/PRUEBAS.md`. `npm test` abre Vitest en modo observador; `npm run test:coverage` genera el informe de cobertura V8 en la terminal y en `coverage-v8/index.html`.
+
+## Hooks de React
+
+| Hook | Dónde se usa |
+| --- | --- |
+| `useState` | Formularios, carrito, checkout, encabezado y la mayoría de las páginas. |
+| `useEffect` (con limpieza) | `CabeceraSitio` (escucha eventos del carrito y la sesión) y `useFetch` (cancela la petición). |
+| `useRef` | `FiltrosCatalogo` (devuelve el foco al buscador) y `useTransientFeedback` (temporizador). |
+| `useMemo` | `CatalogPage` y `CategoriesPage` (filtrado del catálogo). |
+| `useCallback` + `React.memo` | `useTransientFeedback` y `TarjetaProducto`. |
+| `useReducer` | `CartPage` con `src/js/cartReducer.js` (cambiar cantidad, eliminar, vaciar). |
+| Hooks personalizados | `useFetch` (`src/hooks/useFetch.js`; carga las sucursales de `public/data/sucursales.json` en Nosotros) y `useTransientFeedback`. |
+
+## Formularios
+
+- **Registro e inicio de sesión:** React Hook Form con esquemas de Yup (`src/js/validation.js`) conectados mediante `yupResolver`; cada campo muestra su error.
+- **Checkout:** enfoque nativo de componentes controlados, con un estado único (`useState`), un manejador genérico `handleChange`, validación manual y `preventDefault` en el envío.
 
 ## Rutas
 
@@ -42,18 +60,19 @@ Cada vista principal está en su propio archivo dentro de `src/pages/`: Inicio, 
 
 ## Componentes React
 
-`src/components/` contiene diez componentes de interfaz, agrupados entre elementos compartidos y widgets especializados. No todos necesitan aparecer en varias páginas: los componentes de una sola vista encapsulan una pieza con comportamiento o estructura propia.
+`src/components/` contiene once componentes de interfaz, agrupados entre elementos compartidos y widgets especializados. No todos necesitan aparecer en varias páginas: los componentes de una sola vista encapsulan una pieza con comportamiento o estructura propia.
 
-- `SiteHeader`: navegación, estado de sesión y contador del carrito.
-- `SiteFooter`: enlaces y datos compartidos del sitio.
-- `AdminShell`: marco que comparten las rutas del panel administrativo.
-- `ProductCard`: plantilla de una ficha; inicio y catálogo crean una instancia por producto y reciben la acción de compra desde la página, sin escribir directamente en el almacenamiento.
-- `CatalogFilters`: grupo de búsqueda y filtros con estado coordinado del catálogo.
-- `FormField`: etiqueta, control y ayuda, repetidos en formularios de distintas páginas.
-- `QuantityControl`: control de cantidad usado en detalle y carrito.
-- `StatusTimeline`: etapas visuales del estado de un pedido.
-- `StatusMessage`: aviso accesible compartido por varios flujos.
-- `OrderReceiptModal`: comprobante autocontenido que aparece al confirmar una compra.
+- `CabeceraSitio`: navegación, estado de sesión y contador del carrito.
+- `LogoMarca`: logo de la marca, reutilizado en la cabecera y el pie de página.
+- `PieSitio`: enlaces y datos compartidos del sitio.
+- `PanelAdmin`: marco que comparten las rutas del panel administrativo.
+- `TarjetaProducto`: plantilla de una ficha; inicio y catálogo crean una instancia por producto y reciben la acción de compra desde la página, sin escribir directamente en el almacenamiento.
+- `FiltrosCatalogo`: grupo de búsqueda y filtros con estado coordinado del catálogo.
+- `CampoFormulario`: etiqueta, control y ayuda, repetidos en formularios de distintas páginas.
+- `ControlCantidad`: control de cantidad usado en detalle y carrito.
+- `LineaTiempoEstado`: etapas visuales del estado de un pedido.
+- `MensajeEstado`: aviso accesible compartido por varios flujos.
+- `TablaProductosPedido`: tabla de productos de un pedido, usada en el checkout y en las vistas de compra exitosa y con error.
 
 `src/js/` reúne los módulos JavaScript reutilizables de la aplicación, separados por responsabilidad: `products.js` contiene el catálogo base e imágenes, `storage.js` gestiona persistencia de sesión/carrito/pedidos, `format.js` contiene el formateo de precios y `useTransientFeedback.js` controla los avisos temporales del carrito. Las páginas y componentes React con JSX permanecen organizados en `src/pages/` y `src/components/`; la configuración de Vite se mantiene en la raíz y las pruebas en `src/test/`.
 
