@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { formatPrice } from '../js/format.js'
-import { clearSession, getCartTotal, getItemCount, getSession } from '../js/storage.js'
+import { clearSession, getItemCount, getSession } from '../js/storage.js'
 import LogoMarca from './LogoMarca.jsx'
 
 const navigation = [
@@ -17,12 +16,10 @@ const navigation = [
 export default function CabeceraSitio({ active = '' }) {
   const [cartCount, setCartCount] = useState(getItemCount)
   const [session, setSession] = useState(getSession)
-  const [cartTotal, setCartTotal] = useState(getCartTotal)
 
   useEffect(() => {
     const syncState = () => {
       setCartCount(getItemCount())
-      setCartTotal(getCartTotal())
       setSession(getSession())
     }
     window.addEventListener('storage', syncState)
@@ -54,7 +51,7 @@ export default function CabeceraSitio({ active = '' }) {
         {session && session.rol !== 'admin' && <a className="session-link" href="/perfil">Hola, {session.nombre?.split(' ')[0] || 'cliente'}</a>}
         {session && <button className="session-logout" type="button" onClick={logout}>Salir</button>}
         <a className="cart-icon-wrapper" href="/carrito" aria-label={`Carrito, ${cartCount} ${cartCount === 1 ? 'producto' : 'productos'}`}>
-          <span aria-hidden="true">🛒</span><span className="cart-badge">{cartCount}</span>{cartTotal > 0 && <span className="cart-total">{formatPrice(cartTotal)}</span>}
+          <span aria-hidden="true">🛒</span><span className="cart-badge">{cartCount}</span>
         </a>
       </div>
     </header>
