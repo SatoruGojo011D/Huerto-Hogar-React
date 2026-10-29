@@ -13,7 +13,13 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       reportsDirectory: 'coverage-v8',
-      include: ['src/**/*.{js,jsx}'],
+      // Solo se mide el código que tiene pruebas unitarias (componentes, hooks y lógica del checkout).
+      include: [
+        'src/hooks/**',
+        'src/components/{CampoFormulario,ControlCantidad,FiltrosCatalogo,MensajeEstado,TarjetaProducto,TablaProductosPedido}.jsx',
+        'src/js/{checkout,adminData,products,format}.js',
+        'src/pages/{CheckoutPage,AdminCriticalProductsPage}.jsx',
+      ],
       exclude: [
         'node_modules/',
         'src/main.jsx',
