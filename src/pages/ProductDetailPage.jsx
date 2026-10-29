@@ -1,3 +1,4 @@
+// Página /producto?id=...: ficha del producto, selector de cantidad (ControlCantidad) y botón para agregar al carrito.
 import { useState } from 'react'
 import { products } from '../js/products.js'
 import { addCartItem, getCatalogProducts, getSession, readStorage, writeStorage } from '../js/storage.js'

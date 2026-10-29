@@ -1,3 +1,4 @@
+// Página /admin/usuarios/historial: compras asociadas a un usuario.
 import { getOrders, getUsers } from '../js/storage.js'
 import { formatPrice } from '../js/format.js'
 

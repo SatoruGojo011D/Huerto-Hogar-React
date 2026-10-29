@@ -1,3 +1,4 @@
+// Hook que activa un estado temporal (por defecto 1 segundo) tras una acción; lo usa TarjetaProducto para mostrar "✓ Añadido".
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export default function useTransientFeedback(duration = 1000) {

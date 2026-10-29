@@ -1,3 +1,4 @@
+// Página /admin: resumen con las cifras principales del panel y la actividad reciente.
 import { getOrders, getUsers } from '../js/storage.js'
 import { getAdminProducts } from '../js/adminData.js'
 import { formatPrice } from '../js/format.js'

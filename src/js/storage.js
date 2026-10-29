@@ -1,3 +1,5 @@
+// Persistencia en localStorage: sesión, usuarios, pedidos y carrito, más el catálogo combinado con los cambios del administrador.
+// Emite eventos (hh:cart-change, hh:session-change) para que la cabecera se actualice.
 import { getDiscountedPrice, normalizeDiscount, products, resolveProductImage } from './products.js'
 import { formatStock } from './format.js'
 

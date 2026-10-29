@@ -1,3 +1,4 @@
+// Página /nosotros: historia, misión, visión y compromiso de la cooperativa, con selección de sucursal.
 import { useState } from 'react'
 import { useFetch } from '../hooks/useFetch.js'
 

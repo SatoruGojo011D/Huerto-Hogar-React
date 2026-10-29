@@ -1,3 +1,4 @@
+// Página /seguimiento: busca un pedido por su código y muestra sus etapas con LineaTiempoEstado.
 import { useState } from 'react'
 import { getOrders, readStorage, writeStorage } from '../js/storage.js'
 import CampoFormulario from '../components/CampoFormulario.jsx'

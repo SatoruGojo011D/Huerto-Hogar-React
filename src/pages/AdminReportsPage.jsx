@@ -1,3 +1,4 @@
+// Página /admin/reportes: ventas, órdenes por estado y productos más vendidos, calculados con los pedidos guardados.
 import { getOrders } from '../js/storage.js'
 import { formatPrice } from '../js/format.js'
 

@@ -1,3 +1,4 @@
+// Página /admin/productos: listado del catálogo con acciones para editar o desactivar productos.
 import { useState } from 'react'
 import { resolveProductImage } from '../js/products.js'
 import { writeStorage } from '../js/storage.js'

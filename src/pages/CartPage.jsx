@@ -1,3 +1,4 @@
+// Página /carrito: líneas del pedido, cambio de cantidades (useReducer), eliminación, fecha de entrega y totales; lleva a /checkout.
 import { useEffect, useReducer, useState } from 'react'
 import { resolveProductImage } from '../js/products.js'
 import { getCart, readStorage, saveCart, writeStorage } from '../js/storage.js'

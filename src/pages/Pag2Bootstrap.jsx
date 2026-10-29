@@ -1,3 +1,4 @@
+// Página de demostración /bootstrap/productos: tarjetas de react-bootstrap en 1, 2 o 3 columnas según el ancho (xs, sm, lg).
 import { Badge, Button, Card, Col, Container, Row } from 'react-bootstrap'
 import { products } from '../js/products.js'
 import { formatPrice } from '../js/format.js'

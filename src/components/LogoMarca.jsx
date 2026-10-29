@@ -1,3 +1,4 @@
+// Logo de HuertoHogar (ícono de hoja y nombre) como enlace; `href` y `size` son opcionales. Se usa en la cabecera y el pie.
 export default function LogoMarca({ href = '/', size = 24 }) {
   return (
     <a href={href} className="brand-logo">

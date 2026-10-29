@@ -1,3 +1,4 @@
+// Tarjeta de producto reutilizable. Props: `product`, `featured` (diseño destacado) y `onAdd` (el padre decide cómo agregar al carrito).
 import { memo } from 'react'
 import { formatPrice } from '../js/format.js'
 import useTransientFeedback from '../hooks/useTransientFeedback.js'

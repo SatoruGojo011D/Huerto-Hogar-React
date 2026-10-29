@@ -1,3 +1,4 @@
+// Página /registro: creación de cuenta de cliente con React Hook Form y validación con Yup (registerSchema).
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'

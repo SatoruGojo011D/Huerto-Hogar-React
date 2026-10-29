@@ -1,3 +1,4 @@
+// Pie de página de las páginas públicas: logo, enlaces de navegación y ciudades de reparto. No recibe props.
 import LogoMarca from './LogoMarca.jsx'
 
 const navigation = [

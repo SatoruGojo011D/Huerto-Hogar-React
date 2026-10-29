@@ -1,3 +1,4 @@
+// Tabla de solo lectura con los productos de un pedido (imagen, nombre, precio, cantidad, subtotal). Se usa en el checkout y en la boleta.
 import { formatPrice } from '../js/format.js'
 import { resolveProductImage } from '../js/products.js'
 

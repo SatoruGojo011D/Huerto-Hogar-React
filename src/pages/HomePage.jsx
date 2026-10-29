@@ -1,3 +1,4 @@
+// Página de inicio (/): sección principal (hero) y productos destacados con TarjetaProducto en modo `featured`.
 import { addCartItem, getCatalogProducts } from '../js/storage.js'
 import TarjetaProducto from '../components/TarjetaProducto.jsx'
 

@@ -1,3 +1,4 @@
+// Páginas /compra/exitosa y /compra/error: boleta de la compra o error de pago (con su motivo) y opción de reintentar.
 import { formatPrice } from '../js/format.js'
 import { getOrders } from '../js/storage.js'
 import { getPendingOrder } from '../js/checkout.js'
@@ -41,7 +42,7 @@ export function PurchaseResultPage({ success }) {
         </h2>
         {success
           ? <p className="cart-subtitle">Gracias por tu compra. <a href={`/seguimiento?codigo=${encodeURIComponent(order.code)}`}>Ver seguimiento</a></p>
-          : <a className="btn-checkout" href="/checkout">Volver a realizar el pago</a>}
+          : <>{order.rejectionReason && <p className="cart-subtitle">Motivo: {order.rejectionReason}</p>}<a className="btn-checkout" href="/checkout">Volver a realizar el pago</a></>}
         <OrderDetail order={order} />
         {success && <div className="d-flex gap-2 justify-content-center flex-wrap"><button className="btn btn-danger" type="button" onClick={() => window.print()}>Imprimir boleta en PDF</button><a className="btn btn-success" href={`mailto:${order.customerEmail}?subject=Boleta ${order.code}`}>Enviar boleta por email</a></div>}
       </section>

@@ -1,3 +1,4 @@
+// Línea de tiempo del pedido (Confirmado, En preparación, En camino, Entregado) según `status`; se usa en TrackingPage.
 const steps = ['Confirmado', 'En preparación', 'En camino', 'Entregado']
 
 export default function LineaTiempoEstado({ status = 0 }) {

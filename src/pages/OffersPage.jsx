@@ -1,3 +1,4 @@
+// Página /ofertas: productos con descuento mostrados con TarjetaProducto.
 import TarjetaProducto from '../components/TarjetaProducto.jsx'
 import { addCartItem, getCatalogProducts } from '../js/storage.js'
 

@@ -1,3 +1,4 @@
+// Página /admin/ordenes: listado de órdenes, detalle de la boleta y cambio del estado de cada pedido.
 import { useState } from 'react'
 import { formatPrice } from '../js/format.js'
 import { getOrders, getUsers, writeStorage } from '../js/storage.js'

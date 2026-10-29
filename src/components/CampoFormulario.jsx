@@ -1,3 +1,4 @@
+// Campo de formulario accesible: etiqueta, control (input o children), ayuda y error. Reenvía el resto de atributos al <input>.
 export default function CampoFormulario({ id, label, children, help, error, className, ...inputProps }) {
   return (
     <div className="form-group">

@@ -1,3 +1,4 @@
+// Página /contacto: datos de contacto y formulario de mensaje.
 import { useState } from 'react'
 import { readStorage, writeStorage } from '../js/storage.js'
 import CampoFormulario from '../components/CampoFormulario.jsx'

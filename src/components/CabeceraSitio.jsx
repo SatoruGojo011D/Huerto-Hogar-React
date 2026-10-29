@@ -1,3 +1,4 @@
+// Cabecera de las páginas públicas: logo, menú, sesión y carrito con contador. Recibe `active` (ruta actual) para resaltar el enlace.
 import { useEffect, useState } from 'react'
 import { clearSession, getItemCount, getSession } from '../js/storage.js'
 import LogoMarca from './LogoMarca.jsx'

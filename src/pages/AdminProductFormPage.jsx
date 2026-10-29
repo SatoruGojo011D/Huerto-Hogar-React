@@ -1,3 +1,4 @@
+// Formulario compartido para crear (/admin/productos/nuevo) y editar (/admin/productos/editar) productos; la prop `edit` distingue ambos casos.
 import { useState } from 'react'
 import { resolveProductImage } from '../js/products.js'
 import { writeStorage } from '../js/storage.js'

@@ -1,3 +1,5 @@
+// Lógica del checkout: regiones y comunas, totales (neto, IVA, despacho), validación del formulario, armado del pedido,
+// simulación de la pasarela de pago, pedido pendiente y cierre de la compra.
 import { getOrders, readStorage, saveCart, writeStorage } from './storage.js'
 import { discountStock } from './adminData.js'
 
@@ -51,9 +53,11 @@ export function buildOrder({ cart, customer, address, delivery, session }) {
   }
 }
 
+export const rejectionReasons = ['Fondos insuficientes', 'Tarjeta vencida', 'Tarjeta bloqueada por el banco', 'Datos de la tarjeta inválidos', 'Límite de compra excedido']
+
 // Simula la pasarela de pago: aprueba salvo que se fuerce el rechazo.
-export function processPayment(order, { approve = Math.random() < 0.85 } = {}) {
-  return approve ? { ok: true, order } : { ok: false, order, reason: 'La pasarela rechazó el pago.' }
+export function processPayment(order, { approve = true, reason = 'La pasarela rechazó el pago.' } = {}) {
+  return approve ? { ok: true, order } : { ok: false, order, reason }
 }
 
 export function savePendingOrder(order) {

@@ -1,3 +1,4 @@
+// Datos de apoyo para las pruebas: imagen mínima (PIXEL) y producto de ejemplo (buildProduct).
 export const PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
 
 // Producto de ejemplo con descuento; cada prueba parte de una copia nueva.

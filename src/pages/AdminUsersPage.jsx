@@ -1,3 +1,4 @@
+// Página /admin/usuarios: listado y administración de cuentas de usuario.
 import { useState } from 'react'
 import { getSession, getUsers, writeStorage } from '../js/storage.js'
 import MensajeEstado from '../components/MensajeEstado.jsx'

@@ -1,3 +1,4 @@
+// Formato de precios en pesos chilenos (CLP) para mostrarlos en toda la interfaz.
 export function formatPrice(value) {
   return `$${Number(value || 0).toLocaleString('es-CL')} CLP`
 }

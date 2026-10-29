@@ -1,3 +1,4 @@
+// Selector de cantidad (− valor +) controlado por el padre mediante `value` y `onChange`, limitado entre `min` y `max`.
 export default function ControlCantidad({ value, onChange, label = 'Cantidad', min = 1, max = 999 }) {
   function change(nextValue) {
     const numericValue = Number(nextValue)

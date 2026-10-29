@@ -1,3 +1,4 @@
+// Formulario compartido para crear y editar usuarios desde el panel; la prop `edit` distingue ambos casos.
 import { useState } from 'react'
 import { getSession, getUsers, writeStorage } from '../js/storage.js'
 import { emailPattern } from '../js/validation.js'

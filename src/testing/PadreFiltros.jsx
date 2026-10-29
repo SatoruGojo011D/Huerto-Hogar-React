@@ -1,3 +1,4 @@
+// Componente de apoyo solo para pruebas: padre con estado que alimenta a FiltrosCatalogo y muestra un resumen de lo seleccionado.
 import { useState } from 'react'
 import FiltrosCatalogo from '../components/FiltrosCatalogo.jsx'
 

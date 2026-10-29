@@ -1,3 +1,5 @@
+// Componente raíz: mapas de rutas públicas y de administración, título de cada pestaña, protección del panel admin (ProtectedAdmin) y página 404.
+// No usa react-router: compara window.location.pathname con los mapas de rutas.
 import { useEffect } from 'react'
 import './styles/variables.css'
 import './styles/reset.css'

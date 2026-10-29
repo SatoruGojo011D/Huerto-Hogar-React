@@ -1,3 +1,4 @@
+// Datos del panel de administración: lista de productos administrables (catálogo base más cambios guardados), categorías, imágenes disponibles y descuento de stock.
 import { normalizeDiscount, products } from './products.js'
 import { formatStock } from './format.js'
 import { readStorage, writeStorage } from './storage.js'

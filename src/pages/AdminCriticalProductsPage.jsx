@@ -1,3 +1,4 @@
+// Página /admin/productos-criticos: productos con stock crítico (10 unidades o menos).
 import { getAdminProducts } from '../js/adminData.js'
 import { formatPrice } from '../js/format.js'
 

@@ -1,3 +1,4 @@
+/* Ajustes transversales y adaptables (cabecera, carrito, catálogo, detalle de producto, mensajes y modales) que complementan las hojas de src/styles. */
 .site-header {
   gap: 1.5rem;
   min-width: 0;

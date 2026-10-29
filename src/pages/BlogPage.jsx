@@ -1,3 +1,4 @@
+// Página /blog: listado de artículos y lectura del artículo seleccionado.
 import { products } from '../js/products.js'
 
 const articles = [

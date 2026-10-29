@@ -1,3 +1,4 @@
+// Página /catalogo: búsqueda y filtros (FiltrosCatalogo) y grilla responsive de TarjetaProducto.
 import { useMemo, useState } from 'react'
 import { addCartItem, getCatalogProducts } from '../js/storage.js'
 import FiltrosCatalogo from '../components/FiltrosCatalogo.jsx'

@@ -1,3 +1,4 @@
+// Página /admin/categorias: agregar, editar y eliminar las categorías con que se clasifican los productos.
 import { useState } from 'react'
 import { getAdminCategories, getAdminProducts } from '../js/adminData.js'
 import { writeStorage } from '../js/storage.js'

@@ -1,3 +1,4 @@
+// Página de demostración /bootstrap/alertas con componentes de react-bootstrap (Alert, Button, Card) y columnas que se adaptan al ancho.
 import { Alert, Button, Card, Col, Container, Row } from 'react-bootstrap'
 
 export function Pag1Bootstrap() {

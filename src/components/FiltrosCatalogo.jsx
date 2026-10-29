@@ -1,3 +1,4 @@
+// Filtros del catálogo (búsqueda, categorías y rangos de precio). Componente controlado: el estado vive en CatalogPage.
 import { useRef } from 'react'
 
 const categoryOptions = [

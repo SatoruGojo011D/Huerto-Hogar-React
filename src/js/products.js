@@ -1,3 +1,4 @@
+// Catálogo base de productos y manejo de imágenes (resolveProductImage) y descuentos (normalizeDiscount, getDiscountedPrice).
 import applesImage from '../img/manzanas-fuji.png'
 import orangesImage from '../img/naranjas.jpg'
 import bananasImage from '../img/platanos.jpg'

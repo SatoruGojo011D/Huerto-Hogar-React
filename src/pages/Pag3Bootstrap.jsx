@@ -1,3 +1,4 @@
+// Página de demostración /bootstrap/ayuda: preguntas frecuentes con Accordion y Alert de react-bootstrap.
 import { Accordion, Alert, Button, Col, Container, Row } from 'react-bootstrap'
 
 export function Pag3Bootstrap() {

@@ -1,3 +1,4 @@
+/* Estilos globales de la raíz: tipografía, color base y altura de #root. Usa las variables de styles/variables.css. */
 :root {
   font-family: 'Montserrat', sans-serif;
   color: var(--text-dark);

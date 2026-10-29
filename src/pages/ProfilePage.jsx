@@ -1,3 +1,4 @@
+// Páginas /perfil y /admin/perfil: datos y edición del perfil; `adminMode` adapta su uso dentro del panel.
 import { useEffect, useState } from 'react'
 import { clearSession, getSession, getUsers, setSession, writeStorage } from '../js/storage.js'
 import { emailPattern } from '../js/validation.js'

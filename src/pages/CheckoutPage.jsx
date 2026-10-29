@@ -1,7 +1,9 @@
+// Página /checkout: datos del cliente y dirección, validación y pago simulado.
+// La casilla "Simular compra rechazada" fuerza un rechazo con el motivo elegido; sin marcar, el pago se aprueba.
 import { useState } from 'react'
 import { getCart, getSession, readStorage } from '../js/storage.js'
 import { formatPrice } from '../js/format.js'
-import { buildOrder, calculateTotals, completeOrder, processPayment, regions, savePendingOrder, validateCheckout } from '../js/checkout.js'
+import { buildOrder, calculateTotals, completeOrder, processPayment, regions, rejectionReasons, savePendingOrder, validateCheckout } from '../js/checkout.js'
 import CampoFormulario from '../components/CampoFormulario.jsx'
 import TablaProductosPedido from '../components/TablaProductosPedido.jsx'
 import MensajeEstado from '../components/MensajeEstado.jsx'
@@ -18,6 +20,8 @@ export function CheckoutPage({ onNavigate = (url) => window.location.assign(url)
   const [cart] = useState(getCart)
   const [form, setForm] = useState(() => initialForm(session))
   const [errors, setErrors] = useState({})
+  const [simulateReject, setSimulateReject] = useState(false)
+  const [rejectReason, setRejectReason] = useState(rejectionReasons[0])
   const { subtotal, iva, shipping, total } = calculateTotals(cart)
 
   if (!cart.length) {
@@ -36,12 +40,12 @@ export function CheckoutPage({ onNavigate = (url) => window.location.assign(url)
     if (Object.keys(found).length) return
     const { nombre, apellidos, correo, ...address } = form
     const order = buildOrder({ cart, customer: { nombre, apellidos, correo }, address, delivery: readStorage('hh_fecha_entrega', ''), session })
-    const result = processPayment(order, approve === undefined ? undefined : { approve })
+    const result = processPayment(order, { approve: approve ?? !simulateReject, reason: rejectReason })
     if (result.ok) {
       completeOrder(order)
       onNavigate(`/compra/exitosa?codigo=${encodeURIComponent(order.code)}`)
     } else {
-      savePendingOrder(order)
+      savePendingOrder({ ...order, rejectionReason: result.reason })
       onNavigate(`/compra/error?codigo=${encodeURIComponent(order.code)}`)
     }
   }
@@ -83,6 +87,16 @@ export function CheckoutPage({ onNavigate = (url) => window.location.assign(url)
             <CampoFormulario id="checkout-indicaciones" label="Indicaciones para la entrega (opcional)"><textarea id="checkout-indicaciones" name="indicaciones" className="form-control" rows="3" value={form.indicaciones} onChange={change} /></CampoFormulario>
           </div>
         </div>
+        <div className="form-check mt-3">
+          <input id="checkout-simular-rechazo" type="checkbox" className="form-check-input" checked={simulateReject} onChange={(event) => setSimulateReject(event.target.checked)} />
+          <label htmlFor="checkout-simular-rechazo" className="form-check-label">Simular compra rechazada</label>
+        </div>
+        {simulateReject && (
+          <div className="mt-2">
+            <label htmlFor="checkout-motivo-rechazo" className="form-label">Motivo del rechazo</label>
+            <select id="checkout-motivo-rechazo" className="form-select" value={rejectReason} onChange={(event) => setRejectReason(event.target.value)}>{rejectionReasons.map((reason) => <option key={reason}>{reason}</option>)}</select>
+          </div>
+        )}
         <MensajeEstado>{Object.keys(errors).length ? 'Revisa los campos marcados antes de pagar.' : ''}</MensajeEstado>
         <div className="text-end mt-3"><button className="btn-checkout" type="submit">Pagar ahora {formatPrice(total)}</button></div>
       </form>

@@ -1,3 +1,4 @@
+// Página /categorias: productos agrupados por categoría, mostrados con TarjetaProducto.
 import { useMemo } from 'react'
 import { addCartItem, getCatalogProducts } from '../js/storage.js'
 import TarjetaProducto from '../components/TarjetaProducto.jsx'

@@ -1,3 +1,4 @@
+// Configuración de Vite y Vitest: plugin de React, entorno jsdom para las pruebas, archivo de preparación (setup) y cobertura V8.
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
 

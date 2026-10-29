@@ -1,3 +1,4 @@
+// Estructura del panel de administración: barra lateral de navegación y área de contenido (`children`) con el `title` de la página.
 import { clearSession, getSession } from '../js/storage.js'
 
 const adminNavigation = [
